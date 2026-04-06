@@ -1,0 +1,17 @@
+# Python / Ansible
+__pycache__/
+*.pyc
+.mypy_cache/
+.venv/
+
+# Ansible
+collections/ansible_collections/
+*.retry
+.molecule/
+
+# Build artifacts
+*.tar.gz
+
+# OS / Editor
+.DS_Store
+.vscode/
