@@ -1,0 +1,20 @@
+---
+name: phoebus
+version: 0.1.0
+readme: README.md
+authors:
+  - Phoebus Team
+description: >-
+  Unified Ansible collection for Phoebus dependencies, tools, and services.
+license:
+  - EPL-1.0
+repository: https://github.com/ControlSystemStudio/ansible-phoebus
+issues: https://github.com/ControlSystemStudio/ansible-phoebus/issues
+tags:
+  - phoebus
+  - epics
+  - css
+  - automation
+dependencies:
+  ansible.posix: '>=1.5.0'
+  community.general: '>=7.0.0'
