@@ -1,0 +1,18 @@
+---
+phoebus_services_elasticsearch_root: /opt/epics-tools/services/elasticsearch
+phoebus_services_elasticsearch_account: csstudio
+
+phoebus_services_elasticsearch_version: 8.2.3
+phoebus_services_elasticsearch_url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ phoebus_services_elasticsearch_version }}-linux-x86_64.tar.gz
+
+phoebus_services_elasticsearch_release_dir: "{{ phoebus_services_elasticsearch_root }}/release"
+phoebus_services_elasticsearch_conf_dir: "{{ phoebus_services_elasticsearch_root }}/conf"
+phoebus_services_elasticsearch_data_dir: "{{ phoebus_services_elasticsearch_root }}/data"
+phoebus_services_elasticsearch_logs_dir: "{{ phoebus_services_elasticsearch_root }}/logs"
+phoebus_services_elasticsearch_run_dir: "{{ phoebus_services_elasticsearch_root }}/run"
+
+phoebus_services_elasticsearch_cluster_name: phoebus-elasticsearch
+phoebus_services_elasticsearch_http_port: 9200
+phoebus_services_elasticsearch_java_home: /opt/epics-tools/lib/jvm/jdk-21
+phoebus_services_elasticsearch_java_opts: -Xms4g -Xmx4g
+phoebus_services_elasticsearch_service_name: phoebus_services_elasticsearch

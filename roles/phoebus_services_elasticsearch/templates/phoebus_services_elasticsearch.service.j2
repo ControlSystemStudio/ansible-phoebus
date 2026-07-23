@@ -1,0 +1,50 @@
+[Unit]
+Description=Phoebus Elasticsearch
+Documentation=https://www.elastic.co
+Wants=network-online.target
+After=network-online.target
+
+StartLimitIntervalSec=500
+StartLimitBurst=5
+
+[Service]
+Environment=ES_HOME={{ phoebus_services_elasticsearch_release_dir }}
+Environment=ES_JAVA_OPTS={{ phoebus_services_elasticsearch_java_opts }}
+Environment=CONF_DIR={{ phoebus_services_elasticsearch_conf_dir }}
+Environment=CONF_FILE={{ phoebus_services_elasticsearch_conf_dir }}/elasticsearch.yml
+Environment=DATA_DIR={{ phoebus_services_elasticsearch_data_dir }}
+Environment=LOG_DIR={{ phoebus_services_elasticsearch_logs_dir }}
+Environment=PID_DIR={{ phoebus_services_elasticsearch_run_dir }}
+EnvironmentFile=-/etc/default/elasticsearch
+Environment=JAVA_HOME={{ phoebus_services_elasticsearch_java_home }}
+
+User={{ phoebus_services_elasticsearch_account }}
+Group={{ phoebus_services_elasticsearch_account }}
+
+ExecStart={{ phoebus_services_elasticsearch_release_dir }}/bin/elasticsearch
+
+Restart=on-failure
+RestartSec=5s
+
+# Connects standard output to /dev/null
+#StandardOutput=null
+
+# Connects standard error to journal
+StandardError=journal
+
+# When a JVM receives a SIGTERM signal it exits with code 143
+SuccessExitStatus=143
+
+# Specifies the maximum file descriptor number that can be opened by this process
+LimitNOFILE=65536
+
+# Specifies the maximum number of bytes of memory that may be locked into RAM
+# Set to "infinity" if you use the 'bootstrap.mlockall: true' option
+# in elasticsearch.yml and 'MAX_LOCKED_MEMORY=unlimited' in /etc/default/elasticsearch
+#LimitMEMLOCK=infinity
+
+# Shutdown delay in seconds, before process is tried to be killed with KILL (if configured)
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

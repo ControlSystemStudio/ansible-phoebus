@@ -1,0 +1,58 @@
+---
+- name: Ensure Elasticsearch directories exist
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ phoebus_services_elasticsearch_account }}"
+    group: "{{ phoebus_services_elasticsearch_account }}"
+    mode: "u=rwX,g=rwX,o=rX"
+  loop:
+    - "{{ phoebus_services_elasticsearch_root }}"
+    - "{{ phoebus_services_elasticsearch_release_dir }}"
+    - "{{ phoebus_services_elasticsearch_conf_dir }}"
+    - "{{ phoebus_services_elasticsearch_data_dir }}"
+    - "{{ phoebus_services_elasticsearch_logs_dir }}"
+    - "{{ phoebus_services_elasticsearch_run_dir }}"
+
+- name: Install Elasticsearch release
+  become: true
+  ansible.builtin.unarchive:
+    src: "{{ phoebus_services_elasticsearch_url }}"
+    dest: "{{ phoebus_services_elasticsearch_release_dir }}"
+    remote_src: true
+    owner: "{{ phoebus_services_elasticsearch_account }}"
+    group: "{{ phoebus_services_elasticsearch_account }}"
+    extra_opts:
+      - --strip-components=1
+    creates: "{{ phoebus_services_elasticsearch_release_dir }}/bin/elasticsearch"
+  notify: Restart Elasticsearch service
+
+- name: Install Elasticsearch configuration
+  become: true
+  ansible.builtin.template:
+    src: elasticsearch.yml.j2
+    dest: "{{ phoebus_services_elasticsearch_conf_dir }}/elasticsearch.yml"
+    owner: "{{ phoebus_services_elasticsearch_account }}"
+    group: "{{ phoebus_services_elasticsearch_account }}"
+    mode: "u=rw,g=r,o=r"
+  notify: Restart Elasticsearch service
+
+- name: Install Elasticsearch systemd unit
+  become: true
+  ansible.builtin.template:
+    src: phoebus_services_elasticsearch.service.j2
+    dest: "/etc/systemd/system/{{ phoebus_services_elasticsearch_service_name }}.service"
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  notify:
+    - Reload systemd daemon
+    - Restart Elasticsearch service
+
+- name: Enable and start Elasticsearch
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ phoebus_services_elasticsearch_service_name }}"
+    enabled: true
+    state: started
