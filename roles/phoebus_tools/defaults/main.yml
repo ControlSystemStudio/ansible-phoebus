@@ -1,0 +1,13 @@
+---
+phoebus_tools_version: "master"
+
+phoebus_tools_java_home: "/opt/epics-tools/lib/jvm/jdk-21"
+phoebus_tools_mvn_home: "/opt/epics-tools/lib/apache-maven-3.9.9"
+
+phoebus_tools_root: "/opt/epics-tools/tools/phoebus"
+phoebus_tools_phoebus_dest: "{{ phoebus_tools_root }}/lib/phoebus"
+phoebus_tools_settings: "{{ phoebus_tools_root }}/settings.xml"
+
+phoebus_tools_owner: "csstudio"
+phoebus_tools_override_mvn_settings: false
+phoebus_tools_build_always: true

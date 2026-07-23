@@ -1,0 +1,61 @@
+---
+- name: Ensure Phoebus build directories exist
+  become: true
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    owner: "{{ phoebus_tools_owner }}"
+    group: "{{ phoebus_tools_owner }}"
+    mode: "u=rwX,g=rX,o=rX"
+    state: directory
+    recurse: "{{ item.recurse | default(false) }}"
+  loop:
+    - { path: "{{ phoebus_tools_root }}", recurse: false }
+    - { path: "{{ phoebus_tools_root }}/lib", recurse: false }
+
+- name: Clone and/or update the Phoebus repository
+  become: true
+  become_user: "{{ phoebus_tools_owner }}"
+  ansible.builtin.git:
+    repo: "https://github.com/ControlSystemStudio/phoebus.git"
+    dest: "{{ phoebus_tools_phoebus_dest }}"
+    version: "{{ phoebus_tools_version }}"
+    force: true
+    update: true
+    single_branch: false
+    depth: 0
+  register: phoebus_tools_repo
+
+# Override the default Maven settings.xml if requested.
+- name: Override Maven settings.xml
+  become: true
+  ansible.builtin.template:
+    src: settings.xml.j2
+    dest: "{{ phoebus_tools_settings }}"
+    owner: "{{ phoebus_tools_owner }}"
+    group: "{{ phoebus_tools_owner }}"
+    mode: "u=rw,g=r,o=r"
+  when: phoebus_tools_override_mvn_settings
+
+- name: Build documentation and help
+  become: true
+  become_user: "{{ phoebus_tools_owner }}"
+  ansible.builtin.command: mvn clean verify --settings={{ phoebus_tools_settings }} -P sphinx -N
+  args:
+    chdir: "{{ phoebus_tools_phoebus_dest }}"
+  environment:
+    JAVA_HOME: "{{ phoebus_tools_java_home }}"
+    MVN_HOME: "{{ phoebus_tools_mvn_home }}"
+    PATH: "{{ phoebus_tools_java_home }}/bin:{{ phoebus_tools_mvn_home }}/bin:{{ ansible_env.PATH }}"
+  when: phoebus_tools_repo.changed | bool or phoebus_tools_build_always
+
+- name: Build common Phoebus binaries
+  become: true
+  become_user: "{{ phoebus_tools_owner }}"
+  ansible.builtin.command: mvn clean install --settings={{ phoebus_tools_settings }} -DskipTests=true -Dmaven.javadoc.skip=true
+  args:
+    chdir: "{{ phoebus_tools_phoebus_dest }}"
+  environment:
+    JAVA_HOME: "{{ phoebus_tools_java_home }}"
+    MVN_HOME: "{{ phoebus_tools_mvn_home }}"
+    PATH: "{{ phoebus_tools_java_home }}/bin:{{ phoebus_tools_mvn_home }}/bin:{{ ansible_env.PATH }}"
+  when: phoebus_tools_repo.changed | bool or phoebus_tools_build_always

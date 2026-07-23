@@ -1,0 +1,3 @@
+---
+- name: Build Phoebus
+  ansible.builtin.include_tasks: build_phoebus.yml
