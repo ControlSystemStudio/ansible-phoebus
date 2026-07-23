@@ -12,7 +12,18 @@ phoebus_services_elasticsearch_logs_dir: "{{ phoebus_services_elasticsearch_root
 phoebus_services_elasticsearch_run_dir: "{{ phoebus_services_elasticsearch_root }}/run"
 
 phoebus_services_elasticsearch_cluster_name: phoebus-elasticsearch
+phoebus_services_elasticsearch_node_name: "{{ inventory_hostname }}"
+phoebus_services_elasticsearch_node_roles:
+  - master
+  - data
+  - ingest
+phoebus_services_elasticsearch_network_host: 127.0.0.1
 phoebus_services_elasticsearch_http_port: 9200
+phoebus_services_elasticsearch_transport_port: 9300
+phoebus_services_elasticsearch_discovery_type: single-node
+phoebus_services_elasticsearch_seed_hosts: []
+phoebus_services_elasticsearch_initial_master_nodes: []
+phoebus_services_elasticsearch_xpack_security_enabled: false
 phoebus_services_elasticsearch_java_home: /opt/epics-tools/lib/jvm/jdk-21
 phoebus_services_elasticsearch_java_opts: -Xms4g -Xmx4g
 phoebus_services_elasticsearch_service_name: phoebus_services_elasticsearch
