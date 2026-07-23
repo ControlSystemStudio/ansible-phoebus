@@ -26,11 +26,6 @@ Dependencies
 
 This role expects Java and Maven paths provided by `phoebus_dependencies`.
 
-Companion Role
---------------
-
-- Use `phoebus_tools_nsls2_product` to build NSLS-II products and install `run-phoebus` launcher.
-
 Author Information
 ------------------
 
