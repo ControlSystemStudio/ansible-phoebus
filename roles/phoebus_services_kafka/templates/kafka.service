@@ -1,0 +1,38 @@
+# File /etc/systemd/system/{{ phoebus_services_kafka_service_name }}.service
+#
+# Start/status/stop
+#   sudo systemctl start {{ phoebus_services_kafka_service_name }}.service
+#   sudo systemctl status {{ phoebus_services_kafka_service_name }}.service
+#   sudo systemctl stop {{ phoebus_services_kafka_service_name }}.service
+#
+# Start when computer boots:
+#   sudo systemctl enable {{ phoebus_services_kafka_service_name }}.service
+#
+# When running, it should listen on localhost:{{ phoebus_services_kafka_port }}
+#   netstat -an | fgrep {{ phoebus_services_kafka_port }}
+
+[Unit]
+Description=Apache Kafka server (broker)
+Documentation=http://kafka.apache.org/documentation.html
+Requires=network.target remote-fs.target
+After=network.target remote-fs.target
+
+StartLimitIntervalSec=500
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User={{ phoebus_services_kafka_account }}
+Group={{ phoebus_services_kafka_account }}
+
+Restart=on-failure
+RestartSec=5s
+
+Environment=JAVA_HOME={{ phoebus_services_kafka_java_home }}
+Environment=PATH={{ phoebus_services_kafka_java_home }}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+ExecStart={{ phoebus_services_kafka_release_dir }}/bin/kafka-server-start.sh {{ phoebus_services_kafka_conf_dir }}/server.properties
+ExecStop={{ phoebus_services_kafka_release_dir }}/bin/kafka-server-stop.sh
+
+[Install]
+WantedBy=multi-user.target

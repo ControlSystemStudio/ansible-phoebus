@@ -1,0 +1,11 @@
+---
+- name: Reload systemd daemon
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Restart Kafka service
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ phoebus_services_kafka_service_name }}"
+    state: restarted

@@ -1,0 +1,82 @@
+---
+- name: Ensure Kafka service directories exist
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0775"
+    owner: "{{ phoebus_services_kafka_account }}"
+    group: "{{ phoebus_services_kafka_account }}"
+  loop:
+    - "{{ phoebus_services_kafka_root }}"
+    - "{{ phoebus_services_kafka_release_dir }}"
+    - "{{ phoebus_services_kafka_conf_dir }}"
+    - "{{ phoebus_services_kafka_data_dir }}"
+    - "{{ phoebus_services_kafka_logs_dir }}"
+    - "{{ phoebus_services_kafka_logs_path }}"
+    - "{{ phoebus_services_kafka_run_dir }}"
+
+- name: Install Kafka release
+  become: true
+  ansible.builtin.unarchive:
+    src: "{{ phoebus_services_kafka_url }}"
+    dest: "{{ phoebus_services_kafka_release_dir }}"
+    remote_src: true
+    mode: "0775"
+    owner: "{{ phoebus_services_kafka_account }}"
+    group: "{{ phoebus_services_kafka_account }}"
+    extra_opts:
+      - --strip-components=1
+    creates: "{{ phoebus_services_kafka_release_dir }}/bin/kafka-server-start.sh"
+  notify: Restart Kafka service
+
+- name: Validate Kafka KRaft cluster settings
+  ansible.builtin.assert:
+    that:
+      - phoebus_services_kafka_cluster_id | length > 0
+      - phoebus_services_kafka_controller_quorum_voters | length > 0
+    fail_msg: >-
+      Set both phoebus_services_kafka_cluster_id and phoebus_services_kafka_controller_quorum_voters
+      in inventory for KRaft cluster deployments.
+
+- name: Install Kafka configuration
+  become: true
+  ansible.builtin.template:
+    src: server.properties
+    dest: "{{ phoebus_services_kafka_conf_dir }}/server.properties"
+    force: true
+    mode: "0644"
+    owner: "{{ phoebus_services_kafka_account }}"
+    group: "{{ phoebus_services_kafka_account }}"
+  notify: Restart Kafka service
+
+- name: Format Kafka storage for KRaft mode
+  become: true
+  ansible.builtin.command:
+    cmd: >-
+      {{ phoebus_services_kafka_release_dir }}/bin/kafka-storage.sh format
+      --cluster-id {{ phoebus_services_kafka_cluster_id }}
+      --config {{ phoebus_services_kafka_conf_dir }}/server.properties
+      --ignore-formatted
+    creates: "{{ phoebus_services_kafka_logs_path }}/meta.properties"
+  notify: Restart Kafka service
+
+- name: Install Kafka systemd unit
+  become: true
+  ansible.builtin.template:
+    src: kafka.service
+    dest: "/etc/systemd/system/{{ phoebus_services_kafka_service_name }}.service"
+    force: true
+    mode: "0755"
+    owner: root
+    group: root
+  notify:
+    - Reload systemd daemon
+    - Restart Kafka service
+
+- name: Enable and start Kafka service
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ phoebus_services_kafka_service_name }}"
+    state: started
+    enabled: true

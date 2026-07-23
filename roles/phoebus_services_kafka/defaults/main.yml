@@ -1,0 +1,25 @@
+---
+phoebus_services_kafka_root: /opt/epics-tools/services/kafka
+phoebus_services_kafka_account: csstudio
+
+phoebus_services_kafka_scala_version: "2.13"
+phoebus_services_kafka_version: "4.3.1"
+phoebus_services_kafka_url: "https://downloads.apache.org/kafka/{{ phoebus_services_kafka_version }}/kafka_{{ phoebus_services_kafka_scala_version }}-{{ phoebus_services_kafka_version }}.tgz"
+
+phoebus_services_kafka_release_dir: "{{ phoebus_services_kafka_root }}/release"
+phoebus_services_kafka_conf_dir: "{{ phoebus_services_kafka_root }}/conf"
+phoebus_services_kafka_data_dir: "{{ phoebus_services_kafka_root }}/data"
+phoebus_services_kafka_logs_dir: "{{ phoebus_services_kafka_root }}/logs"
+phoebus_services_kafka_run_dir: "{{ phoebus_services_kafka_root }}/run"
+
+phoebus_services_kafka_port: 9092
+phoebus_services_kafka_controller_port: 9093
+phoebus_services_kafka_node_id: 1
+# Example: ["1@10.0.1.11:9093", "2@10.0.1.12:9093", "3@10.0.1.13:9093"]
+phoebus_services_kafka_controller_quorum_voters: []
+phoebus_services_kafka_cluster_id: ""
+phoebus_services_kafka_logs_path: "{{ phoebus_services_kafka_logs_dir }}/kafka-logs"
+
+phoebus_services_kafka_java_home: /opt/epics-tools/lib/jvm/jdk-21
+
+phoebus_services_kafka_service_name: phoebus_services_kafka
