@@ -16,6 +16,7 @@ Ansible collection published as `org.phoebus`.
 
 - `phoebus_dependencies`: installs shared JDK and Maven dependencies under `/opt/epics-tools/lib`
 - `phoebus_services_elasticsearch`: installs and configures Elasticsearch under `/opt/epics-tools/services/elasticsearch`
+- `phoebus_services_mongodb`: installs and configures MongoDB under `/opt/epics-tools/services/mongodb`
 
 ## Filesystem layout
 

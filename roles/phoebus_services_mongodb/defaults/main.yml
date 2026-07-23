@@ -1,0 +1,24 @@
+---
+phoebus_services_mongodb_root: /opt/epics-tools/services/mongodb
+phoebus_services_mongodb_account: mongod
+
+phoebus_services_mongodb_port: 27017
+phoebus_services_mongodb_bind_ip: 127.0.0.1
+phoebus_services_mongodb_bind_ip_all: false
+phoebus_services_mongodb_enable_replica_set: false
+phoebus_services_mongodb_replica_set_name: rs0
+
+phoebus_services_mongodb_service_name: phoebus_services_mongodb
+phoebus_services_mongodb_config_path: "/etc/{{ phoebus_services_mongodb_service_name }}.conf"
+phoebus_services_mongodb_data_path: "{{ phoebus_services_mongodb_root }}/data"
+phoebus_services_mongodb_run_path: "{{ phoebus_services_mongodb_root }}/run"
+phoebus_services_mongodb_pid_file: "{{ phoebus_services_mongodb_run_path }}/mongod.pid"
+phoebus_services_mongodb_log_path: "{{ phoebus_services_mongodb_root }}/logs/mongod.log"
+
+phoebus_services_mongodb_repo_version: "8.3"
+phoebus_services_mongodb_repo_key_version: "8.0"
+phoebus_services_mongodb_repo_name: "mongodb-org-{{ phoebus_services_mongodb_repo_version }}"
+phoebus_services_mongodb_repo_file: "mongodb-org-{{ phoebus_services_mongodb_repo_version }}"
+phoebus_services_mongodb_repo_baseurl: "https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/{{ phoebus_services_mongodb_repo_version }}/x86_64/"
+phoebus_services_mongodb_repo_gpgkey: "https://www.mongodb.org/static/pgp/server-{{ phoebus_services_mongodb_repo_key_version }}.asc"
+phoebus_services_mongodb_package_name: mongodb-org

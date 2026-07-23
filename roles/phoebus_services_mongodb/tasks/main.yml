@@ -1,0 +1,60 @@
+---
+- name: Add MongoDB community repository
+  become: true
+  ansible.builtin.yum_repository:
+    name: "{{ phoebus_services_mongodb_repo_name }}"
+    file: "{{ phoebus_services_mongodb_repo_file }}"
+    description: MongoDB community repository
+    baseurl: "{{ phoebus_services_mongodb_repo_baseurl }}"
+    gpgcheck: true
+    gpgkey: "{{ phoebus_services_mongodb_repo_gpgkey }}"
+    enabled: true
+
+- name: Install MongoDB package
+  become: true
+  ansible.builtin.package:
+    name: "{{ phoebus_services_mongodb_package_name }}"
+    state: present
+
+- name: Ensure MongoDB directories exist
+  become: true
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ phoebus_services_mongodb_account }}"
+    group: "{{ phoebus_services_mongodb_account }}"
+    mode: "u=rwX,g=rwX,o=rX"
+  loop:
+    - "{{ phoebus_services_mongodb_root }}"
+    - "{{ phoebus_services_mongodb_data_path }}"
+    - "{{ phoebus_services_mongodb_run_path }}"
+    - "{{ phoebus_services_mongodb_root }}/logs"
+
+- name: Install MongoDB config
+  become: true
+  ansible.builtin.template:
+    src: mongod.conf.j2
+    dest: "{{ phoebus_services_mongodb_config_path }}"
+    owner: "{{ phoebus_services_mongodb_account }}"
+    group: "{{ phoebus_services_mongodb_account }}"
+    mode: "u=rw,g=r,o=r"
+  notify: Restart MongoDB service
+
+- name: Install MongoDB systemd unit
+  become: true
+  ansible.builtin.template:
+    src: phoebus_services_mongodb.service.j2
+    dest: "/etc/systemd/system/{{ phoebus_services_mongodb_service_name }}.service"
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+  notify:
+    - Reload systemd daemon
+    - Restart MongoDB service
+
+- name: Enable and start MongoDB service
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ phoebus_services_mongodb_service_name }}"
+    enabled: true
+    state: started

@@ -1,0 +1,32 @@
+# Logging data
+systemLog:
+  destination: file
+  logAppend: true
+  path: {{ phoebus_services_mongodb_log_path }}
+
+# Where and how to store data
+storage:
+  dbPath: {{ phoebus_services_mongodb_data_path }}
+  journal:
+    enabled: true
+  engine: wiredTiger
+
+# how the process runs
+processManagement:
+  fork: true
+  pidFilePath: {{ phoebus_services_mongodb_pid_file }}
+  timeZoneInfo: /usr/share/zoneinfo
+
+# network interfaces
+net:
+  port: {{ phoebus_services_mongodb_port }}
+{% if phoebus_services_mongodb_bind_ip_all %}
+  bindIpAll: true
+{% else %}
+  bindIp: {{ phoebus_services_mongodb_bind_ip }}
+{% endif %}
+
+{% if phoebus_services_mongodb_enable_replica_set %}
+replication:
+  replSetName: {{ phoebus_services_mongodb_replica_set_name }}
+{% endif %}
