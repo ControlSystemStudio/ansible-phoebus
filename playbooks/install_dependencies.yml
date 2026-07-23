@@ -1,0 +1,6 @@
+---
+- name: Install Phoebus shared dependencies
+  hosts: all
+  become: true
+  roles:
+    - org.phoebus.phoebus_dependencies

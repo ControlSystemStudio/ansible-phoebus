@@ -1,0 +1,48 @@
+---
+- name: Ensure JVM directory exists
+  ansible.builtin.file:
+    path: "{{ phoebus_dependencies_root }}/jvm"
+    state: directory
+    owner: "{{ phoebus_dependencies_account }}"
+    group: "{{ phoebus_dependencies_account }}"
+    mode: "u=rwX,g=rwX,o=rX"
+
+- name: Install JDKs
+  block:
+    - name: Ensure JDK directories exist
+      ansible.builtin.file:
+        path: "{{ phoebus_dependencies_root }}/jvm/jdk-{{ item.version }}"
+        state: directory
+        owner: "{{ phoebus_dependencies_account }}"
+        group: "{{ phoebus_dependencies_account }}"
+        mode: "u=rwX,g=rwX,o=rX"
+      loop: "{{ phoebus_dependencies_jdk_versions }}"
+
+    - name: Install JDK archives
+      ansible.builtin.unarchive:
+        src: "{{ item.url }}"
+        dest: "{{ phoebus_dependencies_root }}/jvm/jdk-{{ item.version }}"
+        remote_src: true
+        owner: "{{ phoebus_dependencies_account }}"
+        group: "{{ phoebus_dependencies_account }}"
+        extra_opts:
+          - --strip-components=1
+      loop: "{{ phoebus_dependencies_jdk_versions }}"
+
+- name: Ensure Maven directory exists
+  ansible.builtin.file:
+    path: "{{ phoebus_dependencies_root }}/apache-maven-{{ phoebus_dependencies_maven_version }}"
+    state: directory
+    owner: "{{ phoebus_dependencies_account }}"
+    group: "{{ phoebus_dependencies_account }}"
+    mode: "u=rwX,g=rwX,o=rX"
+
+- name: Install Maven
+  ansible.builtin.unarchive:
+    src: "{{ phoebus_dependencies_maven_url }}"
+    dest: "{{ phoebus_dependencies_root }}/apache-maven-{{ phoebus_dependencies_maven_version }}"
+    remote_src: true
+    owner: "{{ phoebus_dependencies_account }}"
+    group: "{{ phoebus_dependencies_account }}"
+    extra_opts:
+      - --strip-components=1
