@@ -1,5 +1,5 @@
 ---
-phoebus_dependencies_root: /opt/phoebus/lib
+phoebus_dependencies_root: /opt/epics-tools/lib
 phoebus_dependencies_account: csstudio
 
 phoebus_dependencies_jdk_versions:
