@@ -1,0 +1,46 @@
+---
+# configure the systemd services for Olog webclient service
+
+# procServ
+- name: Install procServ package
+  become: true
+  ansible.builtin.package:
+    name: procServ
+    state: present
+
+- name: Copy run-phoebus-olog-webclient.sh file
+  become: true
+  ansible.builtin.copy:
+    src: run-phoebus-olog-webclient.sh
+    dest: "{{ phoebus_services_phoebus_olog_webclient_project_path }}/run-phoebus-olog-webclient.sh"
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ phoebus_services_phoebus_olog_webclient_account }}"
+    group: "{{ phoebus_services_phoebus_olog_webclient_account }}"
+
+- name: Copy build-run-phoebus-olog-webclient.sh file
+  become: true
+  ansible.builtin.copy:
+    src: build-run-phoebus-olog-webclient.sh
+    dest: "{{ phoebus_services_phoebus_olog_webclient_project_path }}/build-run-phoebus-olog-webclient.sh"
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ phoebus_services_phoebus_olog_webclient_account }}"
+    group: "{{ phoebus_services_phoebus_olog_webclient_account }}"
+
+# setup systemd service file
+- name: Create systemd Olog webclient service file
+  become: true
+  ansible.builtin.template:
+    src: phoebus_olog_webclient.service.j2
+    dest: "/etc/systemd/system/{{ phoebus_services_phoebus_olog_webclient_service_name }}.service"
+    mode: "u=rw,g=r,o=r"
+    owner: root
+    group: root
+
+# start Olog webclient
+- name: Restart Olog webclient server
+  become: true
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: true
+    enabled: true
+    name: "{{ phoebus_services_phoebus_olog_webclient_service_name }}"
