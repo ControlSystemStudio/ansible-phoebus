@@ -1,0 +1,43 @@
+# File /etc/systemd/system/phoebus_services_phoebus_olog.service
+#
+# After changes
+#   sudo systemctl daemon-reload
+#
+# Start/status/stop
+#   sudo systemctl start phoebus_services_phoebus_olog.service
+#   sudo systemctl status phoebus_services_phoebus_olog.service
+#   sudo systemctl stop phoebus_services_phoebus_olog.service
+#
+# Start when computer boots:
+#   sudo systemctl enable phoebus_services_phoebus_olog.service
+#
+
+[Unit]
+Description=phoebus olog service
+Documentation=https://olog.readthedocs.io/en/latest/
+Wants=network-online.target
+After=phoebus_services_elasticsearch.service phoebus_services_mongodb.service
+Requires=phoebus_services_elasticsearch.service phoebus_services_mongodb.service
+
+StartLimitIntervalSec=500
+StartLimitBurst=5
+
+[Service]
+User={{ phoebus_services_phoebus_olog_account }}
+Group={{ phoebus_services_phoebus_olog_account }}
+
+Restart=on-failure
+RestartSec=5s
+
+Environment=JAVA_HOME={{ phoebus_services_phoebus_olog_java_home }}
+Environment=PATH={{ phoebus_services_phoebus_olog_java_home }}/bin:/usr/bin:/usr/local/bin
+Environment=SERVER={{ phoebus_services_phoebus_olog_root }}
+Environment=PORT={{ phoebus_services_phoebus_olog_procserv_port }}
+
+ExecStart=/usr/bin/procServ --foreground --noautorestart --name phoebus_olog --chdir ${SERVER} --pidfile ${SERVER}/olog.pid --logfile ${SERVER}/console.log ${PORT} ./run-phoebus-olog.sh
+
+# Specifies the maximum file descriptor number that can be opened by this process
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

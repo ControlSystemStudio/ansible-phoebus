@@ -1,0 +1,50 @@
+---
+# configure the systemd services for Olog services
+
+# procServ
+- name: Install procServ package
+  become: true
+  ansible.builtin.package:
+    name: procServ
+    state: present
+
+# Olog server
+
+# setup run-phoebus-olog.sh
+- name: Create run-phoebus-olog script
+  become: true
+  ansible.builtin.template:
+    src: run-phoebus-olog.sh.j2
+    dest: "{{ phoebus_services_phoebus_olog_root }}/run-phoebus-olog.sh"
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ phoebus_services_phoebus_olog_account }}"
+    group: "{{ phoebus_services_phoebus_olog_account }}"
+
+# setup olog properties
+- name: Create olog.properties
+  become: true
+  ansible.builtin.template:
+    src: olog.properties.j2
+    dest: "{{ phoebus_services_phoebus_olog_root }}/olog.properties"
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ phoebus_services_phoebus_olog_account }}"
+    group: "{{ phoebus_services_phoebus_olog_account }}"
+
+# setup systemd service file
+- name: Create systemd Olog server service file
+  become: true
+  ansible.builtin.template:
+    src: phoebus_olog.service.j2
+    dest: "/etc/systemd/system/{{ phoebus_services_phoebus_olog_service_name }}.service"
+    mode: "u=rw,g=r,o=r"
+    owner: root
+    group: root
+
+# start olog server
+- name: Restart Olog server
+  become: true
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: true
+    enabled: true
+    name: "{{ phoebus_services_phoebus_olog_service_name }}"

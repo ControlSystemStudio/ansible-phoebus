@@ -1,0 +1,29 @@
+---
+phoebus_services_phoebus_olog_root: /opt/epics-tools/services/olog
+phoebus_services_phoebus_olog_account: csstudio
+
+phoebus_services_phoebus_olog_service_name: phoebus_services_phoebus_olog
+phoebus_services_phoebus_olog_version: v5.0.4
+phoebus_services_phoebus_olog_jar_name: service-olog-5.0.4.jar
+phoebus_services_phoebus_olog_jar: "{{ phoebus_services_phoebus_olog_root }}/{{ phoebus_services_phoebus_olog_jar_name }}"
+
+phoebus_services_phoebus_olog_java_home: /opt/epics-tools/lib/jvm/jdk-21
+phoebus_services_phoebus_olog_mvn_home: /opt/epics-tools/lib/apache-maven-3.9.9
+
+phoebus_services_phoebus_olog_repo_url: https://github.com/Olog/phoebus-olog.git
+phoebus_services_phoebus_olog_repo_dest: "{{ phoebus_services_phoebus_olog_root }}/phoebus-olog"
+
+# Olog REST service parameters
+phoebus_services_phoebus_olog_http_port: 4180
+phoebus_services_phoebus_olog_https_port: 4181
+
+phoebus_services_phoebus_olog_cors_allowed_origins: http://localhost:3000
+
+phoebus_services_phoebus_olog_es_host: localhost
+phoebus_services_phoebus_olog_es_port: 9200
+
+phoebus_services_phoebus_olog_mongod_host: localhost
+phoebus_services_phoebus_olog_mongod_port: 27017
+
+# procServ port
+phoebus_services_phoebus_olog_procserv_port: 4146

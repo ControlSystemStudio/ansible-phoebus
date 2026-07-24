@@ -1,0 +1,52 @@
+---
+# tasks file for phoebus_services_phoebus_olog
+
+# create the installation location for the olog service
+- name: Ensure services folder exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ phoebus_services_phoebus_olog_root }}"
+    state: directory
+    owner: "{{ phoebus_services_phoebus_olog_account }}"
+    group: "{{ phoebus_services_phoebus_olog_account }}"
+    recurse: true
+
+# Olog
+- name: Clone and/or update Olog service repo
+  become: true
+  become_user: "{{ phoebus_services_phoebus_olog_account }}"
+  ansible.builtin.git:
+    repo: "{{ phoebus_services_phoebus_olog_repo_url }}"
+    dest: "{{ phoebus_services_phoebus_olog_repo_dest }}"
+    force: true
+    version: "{{ phoebus_services_phoebus_olog_version }}"
+    update: true
+
+# Build the Olog library
+- name: Build Olog binaries
+  become: true
+  become_user: "{{ phoebus_services_phoebus_olog_account }}"
+  ansible.builtin.command: mvn clean install -Pdeployable-jar -DskipTests
+  args:
+    chdir: "{{ phoebus_services_phoebus_olog_repo_dest }}"
+  environment:
+    JAVA_HOME: "{{ phoebus_services_phoebus_olog_java_home }}"
+    MVN_HOME: "{{ phoebus_services_phoebus_olog_mvn_home }}"
+    PATH: "{{ phoebus_services_phoebus_olog_java_home }}/bin:{{ phoebus_services_phoebus_olog_mvn_home }}/bin:{{ ansible_env.PATH }}"
+  changed_when: true
+
+# Copy binaries from repo target.
+- name: Copy phoebus olog server jar
+  become: true
+  ansible.builtin.copy:
+    src: "{{ phoebus_services_phoebus_olog_repo_dest }}/target/{{ phoebus_services_phoebus_olog_jar_name }}"
+    dest: "{{ phoebus_services_phoebus_olog_jar }}"
+    force: true
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ phoebus_services_phoebus_olog_account }}"
+    group: "{{ phoebus_services_phoebus_olog_account }}"
+    remote_src: true
+
+# Setup and configure Olog systemd services
+- name: Include tasks to configure Olog systemd services
+  ansible.builtin.include_tasks: configure_services.yml
