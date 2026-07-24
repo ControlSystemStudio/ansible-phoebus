@@ -17,15 +17,6 @@
     owner: "{{ phoebus_services_phoebus_olog_webclient_account }}"
     group: "{{ phoebus_services_phoebus_olog_webclient_account }}"
 
-- name: Copy build-run-phoebus-olog-webclient.sh file
-  become: true
-  ansible.builtin.copy:
-    src: build-run-phoebus-olog-webclient.sh
-    dest: "{{ phoebus_services_phoebus_olog_webclient_project_path }}/build-run-phoebus-olog-webclient.sh"
-    mode: "u=rwx,g=rx,o=rx"
-    owner: "{{ phoebus_services_phoebus_olog_webclient_account }}"
-    group: "{{ phoebus_services_phoebus_olog_webclient_account }}"
-
 # setup systemd service file
 - name: Create systemd Olog webclient service file
   become: true
