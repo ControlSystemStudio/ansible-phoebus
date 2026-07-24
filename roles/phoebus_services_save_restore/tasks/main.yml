@@ -1,0 +1,97 @@
+---
+# tasks file for phoebus_services_save_restore
+
+- name: Ensure service folder for save restore exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ phoebus_services_save_restore_root }}"
+    state: directory
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ phoebus_services_save_restore_account }}"
+    group: "{{ phoebus_services_save_restore_account }}"
+
+# Copy binaries from phoebus build target (phoebus_tools role output).
+- name: Find the save/restore JAR file
+  become: true
+  ansible.builtin.find:
+    paths: "{{ phoebus_services_save_restore_source_target_dir }}"
+    patterns: "{{ phoebus_services_save_restore_source_pattern }}"
+    recurse: false
+  register: phoebus_services_save_restore_jars
+
+- name: Fail if no matching save/restore JAR found
+  ansible.builtin.fail:
+    msg: "No JAR file matching version {{ phoebus_services_save_restore_version }} found in {{ phoebus_services_save_restore_source_target_dir }}."
+  when: phoebus_services_save_restore_jars.matched == 0
+
+- name: Set JAR file path (use first match)
+  ansible.builtin.set_fact:
+    phoebus_services_save_restore_jar_path: "{{ phoebus_services_save_restore_jars.files[0].path }}"
+
+- name: Copy save/restore JAR to destination
+  become: true
+  ansible.builtin.copy:
+    src: "{{ phoebus_services_save_restore_jar_path }}"
+    dest: "{{ phoebus_services_save_restore_jar }}"
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ phoebus_services_save_restore_account }}"
+    group: "{{ phoebus_services_save_restore_account }}"
+    remote_src: true
+
+# procServ
+- name: Install procServ package
+  become: true
+  ansible.builtin.package:
+    name: procServ
+    state: present
+
+# setup save_restore.properties
+- name: Create save restore properties file
+  become: true
+  ansible.builtin.template:
+    src: save_restore.properties.j2
+    dest: "{{ phoebus_services_save_restore_root }}/save_restore.properties"
+    mode: "u=rwx,g=r,o=r"
+    owner: "{{ phoebus_services_save_restore_account }}"
+    group: "{{ phoebus_services_save_restore_account }}"
+
+# setup run-save-restore.sh
+- name: Create run-save-restore script
+  become: true
+  ansible.builtin.template:
+    src: run-save-restore.sh.j2
+    dest: "{{ phoebus_services_save_restore_root }}/run-save-restore.sh"
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ phoebus_services_save_restore_account }}"
+    group: "{{ phoebus_services_save_restore_account }}"
+
+- name: Check if save restore systemd service exists
+  ansible.builtin.stat:
+    path: "/etc/systemd/system/{{ phoebus_services_save_restore_service_name }}.service"
+  register: phoebus_services_save_restore_service_status
+
+- name: Stop save restore service if running
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ phoebus_services_save_restore_service_name }}"
+    state: stopped
+  when: phoebus_services_save_restore_service_status.stat.exists
+
+# setup systemd service file
+- name: Create systemd service file
+  become: true
+  ansible.builtin.template:
+    src: save_restore.service.j2
+    dest: "/etc/systemd/system/{{ phoebus_services_save_restore_service_name }}.service"
+    mode: "u=rw,g=r,o=r"
+    owner: root
+    group: root
+
+# start save restore
+- name: Restart save restore service
+  become: true
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: true
+    enabled: true
+    name: "{{ phoebus_services_save_restore_service_name }}"

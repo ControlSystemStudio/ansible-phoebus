@@ -1,0 +1,5 @@
+---
+allow_duplicates: true
+dependencies:
+  - role: phoebus_dependencies
+  - role: phoebus_tools
