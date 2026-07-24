@@ -1,0 +1,99 @@
+---
+# tasks file for phoebus_services_phoebus_web_runtime
+
+- name: Ensure tools root exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ phoebus_services_phoebus_web_runtime_tools_root }}"
+    state: directory
+    owner: "{{ phoebus_services_phoebus_web_runtime_account }}"
+    group: "{{ phoebus_services_phoebus_web_runtime_account }}"
+    mode: "u=rwx,g=rx,o=rx"
+
+# TODO fork into nsls2
+# pv web socket library
+- name: Clone and/or update nsls2 pvws repo
+  become: true
+  become_user: "{{ phoebus_services_phoebus_web_runtime_account }}"
+  ansible.builtin.git:
+    repo: https://github.com/shroffk/pvws.git
+    dest: "{{ phoebus_services_phoebus_web_runtime_pvws_dest }}"
+    force: true
+    version: "{{ phoebus_services_phoebus_web_runtime_pvws_version }}"
+
+# TODO fork into nsls2
+# display builder web runtime library
+- name: Clone and/or update nsls2 dbwr repo
+  become: true
+  become_user: "{{ phoebus_services_phoebus_web_runtime_account }}"
+  ansible.builtin.git:
+    repo: https://github.com/shroffk/dbwr.git
+    dest: "{{ phoebus_services_phoebus_web_runtime_dbwr_dest }}"
+    force: true
+    version: "{{ phoebus_services_phoebus_web_runtime_dbwr_version }}"
+
+# build the pvws library
+- name: Build pvws binaries
+  become: true
+  become_user: "{{ phoebus_services_phoebus_web_runtime_account }}"
+  ansible.builtin.command: mvn clean install
+  args:
+    chdir: "{{ phoebus_services_phoebus_web_runtime_pvws_dest }}"
+  environment:
+    JAVA_HOME: "{{ phoebus_services_phoebus_web_runtime_java_home }}"
+    MVN_HOME: "{{ phoebus_services_phoebus_web_runtime_mvn_home }}"
+    PATH: "{{ phoebus_services_phoebus_web_runtime_java_home }}/bin:{{ phoebus_services_phoebus_web_runtime_mvn_home }}/bin:{{ ansible_env.PATH }}"
+  changed_when: true
+
+# build the dbwr library
+- name: Build dbwr binaries
+  become: true
+  become_user: "{{ phoebus_services_phoebus_web_runtime_account }}"
+  ansible.builtin.command: mvn clean install
+  args:
+    chdir: "{{ phoebus_services_phoebus_web_runtime_dbwr_dest }}"
+  environment:
+    JAVA_HOME: "{{ phoebus_services_phoebus_web_runtime_java_home }}"
+    MVN_HOME: "{{ phoebus_services_phoebus_web_runtime_mvn_home }}"
+    PATH: "{{ phoebus_services_phoebus_web_runtime_java_home }}/bin:{{ phoebus_services_phoebus_web_runtime_mvn_home }}/bin:{{ ansible_env.PATH }}"
+  changed_when: true
+
+# copy binaries from pvws build output
+- name: Copy pvws war
+  become: true
+  ansible.builtin.copy:
+    src: "{{ phoebus_services_phoebus_web_runtime_pvws_dest }}/target/pvws.war"
+    dest: "{{ phoebus_services_phoebus_web_runtime_tomcat_dest }}/webapps/{{ phoebus_services_phoebus_web_runtime_pvws_war_name }}"
+    remote_src: true
+    owner: "{{ phoebus_services_phoebus_web_runtime_account }}"
+    group: "{{ phoebus_services_phoebus_web_runtime_account }}"
+
+# copy binaries from dbwr build output
+- name: Copy dbwr war
+  become: true
+  ansible.builtin.copy:
+    src: "{{ phoebus_services_phoebus_web_runtime_dbwr_dest }}/target/dbwr.war"
+    dest: "{{ phoebus_services_phoebus_web_runtime_tomcat_dest }}/webapps/{{ phoebus_services_phoebus_web_runtime_dbwr_war_name }}"
+    remote_src: true
+    owner: "{{ phoebus_services_phoebus_web_runtime_account }}"
+    group: "{{ phoebus_services_phoebus_web_runtime_account }}"
+
+# set up the environment variable
+- name: Set environment variables for Tomcat runtime
+  become: true
+  ansible.builtin.template:
+    src: setenv.sh
+    dest: "{{ phoebus_services_phoebus_web_runtime_tomcat_dest }}/bin/setenv.sh"
+    owner: "{{ phoebus_services_phoebus_web_runtime_account }}"
+    group: "{{ phoebus_services_phoebus_web_runtime_account }}"
+    mode: "u=rwx,g=rx,o=rx"
+
+# restart tomcat
+- name: Restart and enable tomcat
+  become: true
+  ansible.builtin.service:
+    daemon_reload: true
+    name: "{{ phoebus_services_phoebus_web_runtime_tomcat_service_name }}"
+    state: restarted
+    enabled: true
+  when: ansible_service_mgr == "systemd"

@@ -19,6 +19,8 @@ Ansible collection published as `org.phoebus`.
 - `phoebus_services_mongodb`: installs and configures MongoDB under `/opt/epics-tools/services/mongodb`
 - `phoebus_services_kafka`: installs and configures Kafka (KRaft mode, no Zookeeper) under `/opt/epics-tools/services/kafka`
 - `phoebus_services_cf`: installs and configures the ChannelFinder service under `/opt/epics-tools/services/cf`
+- `phoebus_services_tomcat`: installs and configures Tomcat under `/opt/epics-tools/services/tomcat`
+- `phoebus_services_phoebus_web_runtime`: installs and configures Phoebus Web Runtime under `/opt/epics-tools/services/tomcat`
 - `phoebus_services_save_restore`: installs and configures the Phoebus Save & Restore service under `/opt/epics-tools/services/save_restore`
 - `phoebus_services_phoebus_olog`: installs and configures the Phoebus Olog service under `/opt/epics-tools/services/olog`
 - `phoebus_services_phoebus_olog_webclient`: installs and configures the Phoebus Olog webclient under `/opt/epics-tools/services/olog_webclient`

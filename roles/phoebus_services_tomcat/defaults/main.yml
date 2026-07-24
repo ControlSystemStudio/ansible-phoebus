@@ -1,0 +1,20 @@
+---
+phoebus_services_tomcat_ver: 9.0.104
+phoebus_services_tomcat_archive_url: https://archive.apache.org/dist/tomcat/tomcat-9/v{{ phoebus_services_tomcat_ver }}/bin/apache-tomcat-{{ phoebus_services_tomcat_ver }}.tar.gz
+phoebus_services_tomcat_archive_dest: /tmp/apache-tomcat-{{ phoebus_services_tomcat_ver }}.tar.gz
+
+phoebus_services_tomcat_dest: /opt/epics-tools/services/tomcat
+phoebus_services_tomcat_service_name: tomcat
+phoebus_services_tomcat_http_port: 7070
+phoebus_services_tomcat_redirect_port: 8443
+phoebus_services_tomcat_ajp_port: 8009
+phoebus_services_tomcat_bind_addr: localhost
+phoebus_services_tomcat_shutdown_port: 7005
+
+phoebus_services_tomcat_ui_manager_user: manager
+phoebus_services_tomcat_ui_manager_pass: Str0ngManagerP@ssw3rd
+phoebus_services_tomcat_ui_admin_username: admin
+phoebus_services_tomcat_ui_admin_pass: Str0ngAdminP@ssw3rd
+
+phoebus_services_tomcat_java_home: /opt/epics-tools/lib/jvm/jdk-21
+phoebus_services_tomcat_account: csstudio

@@ -1,0 +1,21 @@
+---
+phoebus_services_phoebus_web_runtime_account: csstudio
+
+phoebus_services_phoebus_web_runtime_java_home: /opt/epics-tools/lib/jvm/jdk-21
+phoebus_services_phoebus_web_runtime_mvn_home: /opt/epics-tools/lib/apache-maven-3.9.9
+
+phoebus_services_phoebus_web_runtime_epics_ca_addr_list: localhost
+phoebus_services_phoebus_web_runtime_epics_ca_max_array_bytes: 1000000
+
+phoebus_services_phoebus_web_runtime_tools_root: /opt/epics-tools/tools
+phoebus_services_phoebus_web_runtime_pvws_dest: "{{ phoebus_services_phoebus_web_runtime_tools_root }}/nsls2-pvws"
+phoebus_services_phoebus_web_runtime_dbwr_dest: "{{ phoebus_services_phoebus_web_runtime_tools_root }}/nsls2-dbwr"
+
+phoebus_services_phoebus_web_runtime_tomcat_dest: /opt/epics-tools/services/tomcat
+phoebus_services_phoebus_web_runtime_tomcat_service_name: tomcat
+
+phoebus_services_phoebus_web_runtime_pvws_version: nsls2_deploy
+phoebus_services_phoebus_web_runtime_dbwr_version: nsls2_deploy
+
+phoebus_services_phoebus_web_runtime_pvws_war_name: pvws.war
+phoebus_services_phoebus_web_runtime_dbwr_war_name: dbwr.war
