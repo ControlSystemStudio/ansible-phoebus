@@ -1,0 +1,51 @@
+---
+# Build and deploy ChannelFinder server
+
+# Create installation location for cf server
+- name: Ensure services folder exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ phoebus_services_cf_root }}"
+    state: directory
+    owner: "{{ phoebus_services_cf_account }}"
+    group: "{{ phoebus_services_cf_account }}"
+    recurse: true
+
+# ChannelFinder
+- name: Clone and/or update ChannelFinder service repo
+  become: true
+  become_user: "{{ phoebus_services_cf_account }}"
+  ansible.builtin.git:
+    repo: "{{ phoebus_services_cf_repo_url }}"
+    dest: "{{ phoebus_services_cf_repo_dest }}"
+    force: true
+    version: "{{ phoebus_services_cf_version }}"
+
+# Build ChannelFinder library
+- name: Build ChannelFinder binaries
+  become: true
+  become_user: "{{ phoebus_services_cf_account }}"
+  ansible.builtin.command: mvn clean install
+  args:
+    chdir: "{{ phoebus_services_cf_repo_dest }}"
+  environment:
+    JAVA_HOME: "{{ phoebus_services_cf_java_home }}"
+    MVN_HOME: "{{ phoebus_services_cf_mvn_home }}"
+    PATH: "{{ phoebus_services_cf_java_home }}/bin:{{ phoebus_services_cf_mvn_home }}/bin:{{ ansible_env.PATH }}"
+  changed_when: true
+
+# Copy binaries from ChannelFinderService target output.
+- name: Copy ChannelFinder service jar
+  become: true
+  ansible.builtin.copy:
+    src: "{{ phoebus_services_cf_repo_dest }}/target/{{ phoebus_services_cf_version }}.jar"
+    dest: "{{ phoebus_services_cf_jar }}"
+    force: true
+    owner: "{{ phoebus_services_cf_account }}"
+    group: "{{ phoebus_services_cf_account }}"
+    remote_src: true
+    mode: "u=rwx,g=rx,o=rx"
+
+# Set up and configure ChannelFinder systemd services
+- name: Include tasks to configure ChannelFinder services
+  ansible.builtin.include_tasks: configure_services.yml

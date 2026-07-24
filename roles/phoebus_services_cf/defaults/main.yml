@@ -1,0 +1,23 @@
+---
+phoebus_services_cf_root: /opt/epics-tools/services/cf
+phoebus_services_cf_account: csstudio
+
+phoebus_services_cf_http_port: 8080
+phoebus_services_cf_https_port: 8181
+
+# ChannelFinder version
+phoebus_services_cf_version: ChannelFinder-4.7.3
+phoebus_services_cf_jar: "{{ phoebus_services_cf_root }}/{{ phoebus_services_cf_version }}.jar"
+phoebus_services_cf_repo_url: https://github.com/ChannelFinder/ChannelFinderService.git
+phoebus_services_cf_repo_dest: "{{ phoebus_services_cf_root }}/ChannelFinderService"
+
+phoebus_services_cf_java_home: /opt/epics-tools/lib/jvm/jdk-21
+phoebus_services_cf_mvn_home: /opt/epics-tools/lib/apache-maven-3.9.9
+
+phoebus_services_cf_es_host: localhost
+phoebus_services_cf_es_port: 9200
+
+# procServ port
+phoebus_services_cf_procserv_port: 1146
+
+phoebus_services_cf_service_name: phoebus_services_cf

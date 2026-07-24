@@ -1,0 +1,50 @@
+---
+# configure the systemd services for ChannelFinder services
+
+# procServ
+- name: Install procServ package
+  become: true
+  ansible.builtin.package:
+    name: procServ
+    state: present
+
+# ChannelFinder server
+
+# setup run-cf.sh
+- name: Create run-cf script
+  become: true
+  ansible.builtin.template:
+    src: run-cf.sh.j2
+    dest: "{{ phoebus_services_cf_root }}/run-cf.sh"
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ phoebus_services_cf_account }}"
+    group: "{{ phoebus_services_cf_account }}"
+
+# setup cf properties
+- name: Create cf.properties
+  become: true
+  ansible.builtin.template:
+    src: cf.properties.j2
+    dest: "{{ phoebus_services_cf_root }}/cf.properties"
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ phoebus_services_cf_account }}"
+    group: "{{ phoebus_services_cf_account }}"
+
+# setup systemd service file
+- name: Create systemd cf server service file
+  become: true
+  ansible.builtin.template:
+    src: cf.service.j2
+    dest: "/etc/systemd/system/{{ phoebus_services_cf_service_name }}.service"
+    mode: "u=rw,g=r,o=r"
+    owner: root
+    group: root
+
+# start cf server
+- name: Restart ChannelFinder server
+  become: true
+  ansible.builtin.systemd:
+    state: restarted
+    daemon_reload: true
+    enabled: true
+    name: "{{ phoebus_services_cf_service_name }}"
