@@ -1,0 +1,7 @@
+---
+allow_duplicates: true
+dependencies:
+  - role: phoebus_dependencies
+  - role: phoebus_tools
+  - role: phoebus_services_elasticsearch
+  - role: phoebus_services_kafka

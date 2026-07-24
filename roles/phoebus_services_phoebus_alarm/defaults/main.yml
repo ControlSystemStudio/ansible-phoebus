@@ -1,0 +1,44 @@
+---
+phoebus_services_phoebus_alarm_root: /opt/epics-tools/services/phoebus_alarm
+phoebus_services_phoebus_alarm_account: csstudio
+
+phoebus_services_phoebus_alarm_java_home: /opt/epics-tools/lib/jvm/jdk-21
+
+# Alarm Server channel access options
+phoebus_services_phoebus_alarm_epics_ca_addr_list: localhost
+
+phoebus_services_phoebus_alarm_kafka_bin_dir: /opt/epics-tools/services/kafka/release/bin
+phoebus_services_phoebus_alarm_kafka_server: localhost
+phoebus_services_phoebus_alarm_kafka_port: 9092
+
+phoebus_services_phoebus_alarm_es_host: localhost
+phoebus_services_phoebus_alarm_es_port: 9200
+
+phoebus_services_phoebus_alarm_config: NSLS2_OPR
+
+phoebus_services_phoebus_alarm_mail_server: smtpgw.bnl.gov
+phoebus_services_phoebus_alarm_mail_server_port: 25
+phoebus_services_phoebus_alarm_mail_server_from: phoebus_alarm@bnl.gov
+
+phoebus_services_phoebus_alarm_server_version: 5.0.0
+phoebus_services_phoebus_alarm_server_jar: service-alarm-server-{{ phoebus_services_phoebus_alarm_server_version }}.jar
+phoebus_services_phoebus_alarm_server_procserv_port: 60046
+
+phoebus_services_phoebus_alarm_logger_version: 5.0.0
+phoebus_services_phoebus_alarm_logger_jar: service-alarm-logger-{{ phoebus_services_phoebus_alarm_logger_version }}.jar
+phoebus_services_phoebus_alarm_logger_procserv_port: 60047
+
+phoebus_services_phoebus_alarm_config_logger_version: 5.0.0
+phoebus_services_phoebus_alarm_config_logger_jar: service-alarm-config-logger-{{ phoebus_services_phoebus_alarm_config_logger_version }}.jar
+phoebus_services_phoebus_alarm_config_logger_procserv_port: 60048
+phoebus_services_phoebus_alarm_config_local_repo: "{{ phoebus_services_phoebus_alarm_root }}/alarm_config_logger"
+
+# Artifacts built by phoebus_tools role.
+phoebus_services_phoebus_alarm_tools_root: /opt/epics-tools/tools/phoebus/lib/phoebus/services
+phoebus_services_phoebus_alarm_server_archive: "{{ phoebus_services_phoebus_alarm_tools_root }}/alarm-server/target/service-alarm-server-{{ phoebus_services_phoebus_alarm_server_version }}-bin.tar.gz"
+phoebus_services_phoebus_alarm_logger_source_jar: "{{ phoebus_services_phoebus_alarm_tools_root }}/alarm-logger/target/{{ phoebus_services_phoebus_alarm_logger_jar }}"
+phoebus_services_phoebus_alarm_config_logger_source_jar: "{{ phoebus_services_phoebus_alarm_tools_root }}/alarm-config-logger/target/{{ phoebus_services_phoebus_alarm_config_logger_jar }}"
+
+phoebus_services_phoebus_alarm_service_name_server: phoebus_services_phoebus_alarm
+phoebus_services_phoebus_alarm_service_name_logger: phoebus_services_phoebus_alarm_logger
+phoebus_services_phoebus_alarm_service_name_config_logger: phoebus_services_phoebus_alarm_config_logger

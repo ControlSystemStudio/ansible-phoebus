@@ -1,0 +1,49 @@
+# File /etc/systemd/system/phoebus_services_phoebus_alarm_config_logger.service
+#
+# After changes
+#   sudo systemctl daemon-reload
+#
+# Start/status/stop
+#   sudo systemctl start phoebus_services_phoebus_alarm_config_logger.service
+#   sudo systemctl status phoebus_services_phoebus_alarm_config_logger.service
+#   sudo systemctl stop phoebus_services_phoebus_alarm_config_logger.service
+#
+# Start when computer boots:
+#   sudo systemctl enable phoebus_services_phoebus_alarm_config_logger.service
+#
+
+[Unit]
+Description=alarm service
+Documentation=https://github.com/shroffk/phoebus/tree/master/services/alarm-logger
+Wants=network-online.target
+After=phoebus_services_kafka.service phoebus_services_phoebus_alarm.service
+Requires=phoebus_services_kafka.service phoebus_services_phoebus_alarm.service
+
+StartLimitIntervalSec=500
+StartLimitBurst=5
+
+[Service]
+User={{ phoebus_services_phoebus_alarm_account }}
+Group={{ phoebus_services_phoebus_alarm_account }}
+
+Restart=on-failure
+RestartSec=5s
+
+Environment=JAVA_HOME={{ phoebus_services_phoebus_alarm_java_home }}
+Environment=PATH={{ phoebus_services_phoebus_alarm_java_home }}/bin:/usr/bin:/usr/local/bin
+Environment=SERVER={{ phoebus_services_phoebus_alarm_root }}/alarm_config_logger
+Environment=PORT={{ phoebus_services_phoebus_alarm_config_logger_procserv_port }}
+
+Environment=KAFKA_SERVER={{ phoebus_services_phoebus_alarm_kafka_server }}:{{ phoebus_services_phoebus_alarm_kafka_port }}
+Environment=CONFIG={{ phoebus_services_phoebus_alarm_config }}
+Environment=REPO_LOCATION={{ phoebus_services_phoebus_alarm_config_local_repo }}
+
+Environment=SETTINGS={{ phoebus_services_phoebus_alarm_root }}/phoebus_alarm_preferences.ini
+
+ExecStart=/usr/bin/procServ --foreground --noautorestart --name alarm-config-logger --chdir ${SERVER} --logfile ${SERVER}/console.log --pidfile ${SERVER}/phoebus-alarm-config-logger.pid ${PORT} ./run-phoebus-alarm-config-logger.sh -bootstrap.servers ${KAFKA_SERVER} -topics ${CONFIG} -repo.location ${REPO_LOCATION}
+
+# Specifies the maximum file descriptor number that can be opened by this process
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

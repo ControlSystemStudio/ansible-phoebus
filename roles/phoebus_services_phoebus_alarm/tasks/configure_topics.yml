@@ -1,0 +1,22 @@
+---
+# configure alarm topics
+
+# setup create_alarm_topics.sh
+- name: Create script for creating alarm topics
+  become: true
+  ansible.builtin.template:
+    src: create_alarm_topics.sh.j2
+    dest: "{{ phoebus_services_phoebus_alarm_root }}/create_alarm_topics.sh"
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ phoebus_services_phoebus_alarm_account }}"
+    group: "{{ phoebus_services_phoebus_alarm_account }}"
+
+- name: Create alarm topics
+  become: true
+  ansible.builtin.shell: >-
+    "{{ phoebus_services_phoebus_alarm_root }}/create_alarm_topics.sh
+    {{ phoebus_services_phoebus_alarm_config }}
+    > /tmp/phoebus-create-topics.log 2>&1"
+  args:
+    executable: /bin/bash
+  changed_when: true

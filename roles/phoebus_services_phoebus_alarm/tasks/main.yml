@@ -1,0 +1,86 @@
+---
+# tasks file for phoebus_services_phoebus_alarm
+
+# Alarm Server
+
+# create the installation location for the alarm server
+- name: Ensure alarm_server folder exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ phoebus_services_phoebus_alarm_root }}/alarm_server"
+    state: directory
+    owner: "{{ phoebus_services_phoebus_alarm_account }}"
+    group: "{{ phoebus_services_phoebus_alarm_account }}"
+    recurse: true
+
+# Copy binaries from phoebus tools output
+- name: Copy alarm server binaries archive
+  become: true
+  ansible.builtin.unarchive:
+    src: "{{ phoebus_services_phoebus_alarm_server_archive }}"
+    dest: "{{ phoebus_services_phoebus_alarm_root }}/alarm_server"
+    remote_src: true
+    owner: "{{ phoebus_services_phoebus_alarm_account }}"
+    group: "{{ phoebus_services_phoebus_alarm_account }}"
+    extra_opts:
+      - --strip-components=1
+
+# create the installation location for the alarm logging server
+- name: Ensure alarm_logger folder exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ phoebus_services_phoebus_alarm_root }}/alarm_logger"
+    state: directory
+    owner: "{{ phoebus_services_phoebus_alarm_account }}"
+    group: "{{ phoebus_services_phoebus_alarm_account }}"
+    recurse: true
+
+# Copy binaries from phoebus tools output
+- name: Copy alarm logger server jar
+  become: true
+  ansible.builtin.copy:
+    src: "{{ phoebus_services_phoebus_alarm_logger_source_jar }}"
+    dest: "{{ phoebus_services_phoebus_alarm_root }}/alarm_logger/{{ phoebus_services_phoebus_alarm_logger_jar }}"
+    remote_src: true
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ phoebus_services_phoebus_alarm_account }}"
+    group: "{{ phoebus_services_phoebus_alarm_account }}"
+
+# create the installation location for the alarm config logger server
+- name: Ensure alarm_config_logger folder exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ phoebus_services_phoebus_alarm_root }}/alarm_config_logger"
+    state: directory
+    owner: "{{ phoebus_services_phoebus_alarm_account }}"
+    group: "{{ phoebus_services_phoebus_alarm_account }}"
+    recurse: true
+
+# Copy binaries from phoebus tools output
+- name: Copy alarm config logger server jar
+  become: true
+  ansible.builtin.copy:
+    src: "{{ phoebus_services_phoebus_alarm_config_logger_source_jar }}"
+    dest: "{{ phoebus_services_phoebus_alarm_root }}/alarm_config_logger/{{ phoebus_services_phoebus_alarm_config_logger_jar }}"
+    remote_src: true
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ phoebus_services_phoebus_alarm_account }}"
+    group: "{{ phoebus_services_phoebus_alarm_account }}"
+
+# Create the alarm preferences
+- name: Create alarm server preferences file
+  become: true
+  ansible.builtin.template:
+    src: phoebus_alarm_preferences.ini.j2
+    dest: "{{ phoebus_services_phoebus_alarm_root }}/phoebus_alarm_preferences.ini"
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ phoebus_services_phoebus_alarm_account }}"
+    group: "{{ phoebus_services_phoebus_alarm_account }}"
+
+# Configure alarm topics
+- name: Include tasks to configure alarm topics
+  ansible.builtin.include_tasks: configure_topics.yml
+
+# Configure alarm systemd services
+- name: Include tasks to configure alarm systemd services
+  ansible.builtin.include_tasks: configure_services.yml

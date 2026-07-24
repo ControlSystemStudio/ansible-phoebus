@@ -1,0 +1,36 @@
+# Channel Access
+org.phoebus.pv.ca/addr_list={{ phoebus_services_phoebus_alarm_epics_ca_addr_list }}
+org.phoebus.pv.ca/auto_addr_list=false
+
+# PVAccess
+org.epics.pva/epics_pva_addr_list={{ phoebus_services_phoebus_alarm_epics_ca_addr_list }}
+org.phoebus.pv.pva/epics_pva_auto_addr_list=false
+
+# email
+# smtp host
+org.phoebus.email/mailhost={{ phoebus_services_phoebus_alarm_mail_server }}
+# smtp port
+org.phoebus.email/mailport={{ phoebus_services_phoebus_alarm_mail_server_port }}
+# Default address to be used for From:
+org.phoebus.email/from={{ phoebus_services_phoebus_alarm_mail_server_from }}
+
+# Alarm server# Phoebus Alarm
+org.phoebus.applications.alarm/server= {{ phoebus_services_phoebus_alarm_kafka_server }}:{{ phoebus_services_phoebus_alarm_kafka_port }}
+org.phoebus.applications.alarm/config_name={{ phoebus_services_phoebus_alarm_config }}
+org.phoebus.applications.alarm/config_names={{ phoebus_services_phoebus_alarm_config }}
+org.phoebus.applications.alarm/automated_email_sender={{ phoebus_services_phoebus_alarm_mail_server_from }}
+
+# Alarm logger configuration
+# location of elastic node/s
+org.phoebus.applications.alarm.logging.ui/es_host={{ phoebus_services_phoebus_alarm_es_host }}
+org.phoebus.applications.alarm.logging.ui/es_port={{ phoebus_services_phoebus_alarm_es_port }}
+org.phoebus.applications.alarm.logging.ui/es_index={{ phoebus_services_phoebus_alarm_config }}
+org.phoebus.applications.alarm.logging.ui/es_max_size=1000
+
+# Alarm config server configuration
+#bootstrap.servers={{ phoebus_services_phoebus_alarm_kafka_server }}:{{ phoebus_services_phoebus_alarm_kafka_port }}
+#alarm_topics={{ phoebus_services_phoebus_alarm_config }}
+#kafka_properties=
+
+# Location of the git repo
+#local.location={{ phoebus_services_phoebus_alarm_config_local_repo }}

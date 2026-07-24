@@ -1,0 +1,32 @@
+#!/bin/sh
+
+export JAVA_HOME={{ phoebus_services_phoebus_alarm_java_home }}
+export PATH="$JAVA_HOME/bin:$PATH"
+
+env
+
+which dirname
+
+if [ $# -ne 1 ]
+then
+    echo "Usage: create_alarm_topics.sh Accelerator"
+    exit 1
+fi
+
+config=$1
+
+# Create the compacted topics.
+for topic in "$1"
+do
+    {{ phoebus_services_phoebus_alarm_kafka_bin_dir }}/kafka-topics.sh --bootstrap-server {{ phoebus_services_phoebus_alarm_kafka_server }}:{{ phoebus_services_phoebus_alarm_kafka_port }} --create --replication-factor 1 --partitions 1 --topic $topic
+    {{ phoebus_services_phoebus_alarm_kafka_bin_dir }}/kafka-configs.sh --bootstrap-server {{ phoebus_services_phoebus_alarm_kafka_server }}:{{ phoebus_services_phoebus_alarm_kafka_port }} --entity-type topics --alter --entity-name $topic \
+           --add-config cleanup.policy=compact,segment.ms=10000,min.cleanable.dirty.ratio=0.01,min.compaction.lag.ms=1000
+done
+
+# Create the deleted topics
+for topic in "${1}Command" "${1}Talk"
+do
+    {{ phoebus_services_phoebus_alarm_kafka_bin_dir }}/kafka-topics.sh --bootstrap-server {{ phoebus_services_phoebus_alarm_kafka_server }}:{{ phoebus_services_phoebus_alarm_kafka_port }} --create --replication-factor 1 --partitions 1 --topic $topic
+    {{ phoebus_services_phoebus_alarm_kafka_bin_dir }}/kafka-configs.sh --bootstrap-server {{ phoebus_services_phoebus_alarm_kafka_server }}:{{ phoebus_services_phoebus_alarm_kafka_port }} --entity-type topics --alter --entity-name $topic \
+           --add-config cleanup.policy=delete,segment.ms=10000,min.cleanable.dirty.ratio=0.01,min.compaction.lag.ms=1000,retention.ms=20000,delete.retention.ms=1000,file.delete.delay.ms=1000
+done
