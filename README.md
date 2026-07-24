@@ -25,6 +25,7 @@ Ansible collection published as `org.phoebus`.
 - `phoebus_services_phoebus_alarm`: installs and configures Phoebus Alarm services under `/opt/epics-tools/services/phoebus_alarm`
 - `phoebus_services_phoebus_olog`: installs and configures the Phoebus Olog service under `/opt/epics-tools/services/olog`
 - `phoebus_services_phoebus_olog_webclient`: installs and configures the Phoebus Olog webclient under `/opt/epics-tools/services/olog_webclient`
+- `phoebus_services_aa`: installs and configures Archiver Appliance services under `/opt/epics-tools/services/<beamline>/aa`
 - `phoebus_tools`: builds and installs core Phoebus libraries
 
 ## Filesystem layout

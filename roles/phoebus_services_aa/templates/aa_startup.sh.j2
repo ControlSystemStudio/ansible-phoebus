@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Aggregate startup script for Archiver Appliance.
+# Starts/stops all AA components in dependency-safe order.
+
+set -euo pipefail
+
+DEPLOY_DIR="{{ aa_deploy_location }}"
+BEAMLINE="{{ beamline_name }}"
+
+MGMT_SCRIPT="${DEPLOY_DIR}/${BEAMLINE}_mgmt_startup.sh"
+ENGINE_SCRIPT="${DEPLOY_DIR}/${BEAMLINE}_engine_startup.sh"
+ETL_SCRIPT="${DEPLOY_DIR}/${BEAMLINE}_etl_startup.sh"
+RETRIEVAL_SCRIPT="${DEPLOY_DIR}/${BEAMLINE}_retrieval_startup.sh"
+
+for script in "${MGMT_SCRIPT}" "${ENGINE_SCRIPT}" "${ETL_SCRIPT}" "${RETRIEVAL_SCRIPT}"; do
+  if [[ ! -x "${script}" ]]; then
+    echo "Missing or non-executable startup script: ${script}"
+    exit 1
+  fi
+done
+
+start_all() {
+  "${MGMT_SCRIPT}" start
+  "${ENGINE_SCRIPT}" start
+  "${ETL_SCRIPT}" start
+  "${RETRIEVAL_SCRIPT}" start
+}
+
+stop_all() {
+  "${RETRIEVAL_SCRIPT}" stop
+  "${ETL_SCRIPT}" stop
+  "${ENGINE_SCRIPT}" stop
+  "${MGMT_SCRIPT}" stop
+}
+
+case "${1:-}" in
+  start)
+    start_all
+    ;;
+  stop)
+    stop_all
+    ;;
+  restart)
+    stop_all
+    start_all
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 2
+    ;;
+esac
