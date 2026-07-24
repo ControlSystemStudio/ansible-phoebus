@@ -26,11 +26,11 @@ export TOMCAT_HOME="{{ aa_tomcat_home }}"
 export ARCHAPPL_DEPLOY_DIR="{{ aa_deploy_location }}"
 
 # Set appliance.xml and the identity of this appliance
-export ARCHAPPL_APPLIANCES="{{ aa_deploy_location }}/appliances.xml"
+export ARCHAPPL_APPLIANCES="{{ aa_appliances_file }}"
 export ARCHAPPL_MYIDENTITY="{{ aa_identity }}"
 
 # If you have your own policies file, please change this line.
-export ARCHAPPL_POLICIES="{{ aa_install_location }}/conf/policies.py"
+export ARCHAPPL_POLICIES="{{ aa_policies_file }}"
 
 # Set the location of short term and long term stores; this is necessary only if your policy demands it
 ###

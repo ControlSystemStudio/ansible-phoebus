@@ -1,6 +1,6 @@
 [Unit]
-Description={{beamline_name}} Archiver Appliance {{ aa_instance_name | upper }} Server
-After=syslog.target network.target nsls2-data-{{beamline_name}}.mount
+Description=Archiver Appliance {{ aa_instance_name | upper }} Server
+After=syslog.target network.target
 
 StartLimitIntervalSec=500
 StartLimitBurst=5
@@ -18,8 +18,8 @@ RestartSec=5s
 Environment=JAVA_HOME="{{ aa_java_home }}"
 Environment=CATALINA_PID="{{ aa_deploy_location }}/{{ aa_instance_name }}/pid"
 
-ExecStart={{ aa_deploy_location}}/{{ beamline_name }}_{{ aa_instance_name }}_startup.sh start
-ExecStop={{ aa_deploy_location }}/{{ beamline_name }}_{{ aa_instance_name }}_startup.sh stop
+ExecStart={{ aa_deploy_location}}/{{ aa_script_prefix }}_{{ aa_instance_name }}_startup.sh start
+ExecStop={{ aa_deploy_location }}/{{ aa_script_prefix }}_{{ aa_instance_name }}_startup.sh stop
 TimeoutStartSec=180
 TimeoutStopSec=180
 

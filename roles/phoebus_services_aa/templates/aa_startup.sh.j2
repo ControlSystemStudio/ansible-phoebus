@@ -6,12 +6,12 @@
 set -euo pipefail
 
 DEPLOY_DIR="{{ aa_deploy_location }}"
-BEAMLINE="{{ beamline_name }}"
+SCRIPT_PREFIX="{{ aa_script_prefix }}"
 
-MGMT_SCRIPT="${DEPLOY_DIR}/${BEAMLINE}_mgmt_startup.sh"
-ENGINE_SCRIPT="${DEPLOY_DIR}/${BEAMLINE}_engine_startup.sh"
-ETL_SCRIPT="${DEPLOY_DIR}/${BEAMLINE}_etl_startup.sh"
-RETRIEVAL_SCRIPT="${DEPLOY_DIR}/${BEAMLINE}_retrieval_startup.sh"
+MGMT_SCRIPT="${DEPLOY_DIR}/${SCRIPT_PREFIX}_mgmt_startup.sh"
+ENGINE_SCRIPT="${DEPLOY_DIR}/${SCRIPT_PREFIX}_engine_startup.sh"
+ETL_SCRIPT="${DEPLOY_DIR}/${SCRIPT_PREFIX}_etl_startup.sh"
+RETRIEVAL_SCRIPT="${DEPLOY_DIR}/${SCRIPT_PREFIX}_retrieval_startup.sh"
 
 for script in "${MGMT_SCRIPT}" "${ENGINE_SCRIPT}" "${ETL_SCRIPT}" "${RETRIEVAL_SCRIPT}"; do
   if [[ ! -x "${script}" ]]; then

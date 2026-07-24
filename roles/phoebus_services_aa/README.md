@@ -9,26 +9,37 @@ Builds and deploys the Archiver Appliance as four local services:
 
 This role defaults to a single-node setup and can be switched to multi-node by overriding cluster variables.
 
-## Install location
+SSL/TLS is disabled by default (`aa_enable_ssl: false`).
 
-- Install artifacts: `/opt/epics-tools/services/{{ beamline_name }}/aa/install`
-- Runtime deploy: `/opt/epics-tools/services/{{ beamline_name }}/aa/deploy`
+## Filesystem layout
+
+- Root: `{{ aa_root }}`
+- Release: `{{ aa_release_dir }}`
+- Config: `{{ aa_conf_dir }}`
+- Data: `{{ aa_data_dir }}`
+- Logs: `{{ aa_logs_dir }}`
+- Run: `{{ aa_run_dir }}`
+
+Internal role paths:
+
+- Install artifacts: `{{ aa_install_location }}`
+- Runtime deploy: `{{ aa_deploy_location }}`
 
 ## Systemd service created
 
-- `{{ beamline_name }}_aa.service`
+- `{{ aa_service_name }}.service`
 
 This service uses the aggregate startup script at:
 
-- `{{ aa_deploy_location }}/{{ beamline_name }}_startup.sh`
+- `{{ aa_deploy_location }}/{{ aa_script_prefix }}_startup.sh`
 
 ## Aggregate startup helper
 
 This role writes an aggregate startup script that starts all four components in order:
 
-- `{{ aa_deploy_location }}/{{ beamline_name }}_startup.sh start`
-- `{{ aa_deploy_location }}/{{ beamline_name }}_startup.sh stop`
-- `{{ aa_deploy_location }}/{{ beamline_name }}_startup.sh restart`
+- `{{ aa_deploy_location }}/{{ aa_script_prefix }}_startup.sh start`
+- `{{ aa_deploy_location }}/{{ aa_script_prefix }}_startup.sh stop`
+- `{{ aa_deploy_location }}/{{ aa_script_prefix }}_startup.sh restart`
 
 Start order is `mgmt -> engine -> etl -> retrieval`.
 Stop order is reverse: `retrieval -> etl -> engine -> mgmt`.
@@ -49,10 +60,19 @@ Example playbook:
 Optional single-node overrides:
 
 ```yaml
-beamline_name: tst
-beamline_id: "31"
 aa_node_hostname: "aa1.example.org"
 aa_identity: appliance0
+aa_enable_ssl: false
+```
+
+Default ports:
+
+```yaml
+cluster_inetport: 17670
+mgmt_port: 17665
+engine_port: 17666
+etl_port: 17667
+data_retrieval_port: 17668
 ```
 
 ## Multi-node install
@@ -97,10 +117,14 @@ Important:
 
 ## Important variables
 
-- `beamline_name`: beamline/site name used in paths and service names
-- `beamline_id`: two-digit ID used to derive ports
+- `aa_root`: archiver service root path
+- `aa_release_dir`, `aa_conf_dir`, `aa_data_dir`, `aa_logs_dir`, `aa_run_dir`: service layout directories
+- `aa_service_name`: systemd unit base name (without `.service`)
+- `aa_script_prefix`: startup script name prefix
 - `aa_identity`: node identity for this host
 - `aa_node_hostname`: hostname used by default single-node `aa_cluster_appliances`
+- `cluster_inetport`, `mgmt_port`, `engine_port`, `etl_port`, `data_retrieval_port`: archiver network ports
+- `aa_enable_ssl`: enables TLS URL generation and SSL certificate setup when `true`
 - `aa_cluster_appliances`: appliance topology definition
 - `aa_mysql_server`, `aa_mysql_database`, `aa_mysql_user`, `aa_mysql_password`: database settings
 - `aa_ssl_cert_file`, `aa_ssl_key_file`, `aa_ssl_chain_file`: TLS files
