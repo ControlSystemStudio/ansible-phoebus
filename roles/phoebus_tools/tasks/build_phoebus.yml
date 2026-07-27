@@ -46,6 +46,7 @@
     JAVA_HOME: "{{ phoebus_tools_java_home }}"
     MVN_HOME: "{{ phoebus_tools_mvn_home }}"
     PATH: "{{ phoebus_tools_java_home }}/bin:{{ phoebus_tools_mvn_home }}/bin:{{ ansible_env.PATH }}"
+  changed_when: true
   when: phoebus_tools_repo.changed | bool or phoebus_tools_build_always
 
 - name: Build common Phoebus binaries
@@ -58,4 +59,5 @@
     JAVA_HOME: "{{ phoebus_tools_java_home }}"
     MVN_HOME: "{{ phoebus_tools_mvn_home }}"
     PATH: "{{ phoebus_tools_java_home }}/bin:{{ phoebus_tools_mvn_home }}/bin:{{ ansible_env.PATH }}"
+  changed_when: true
   when: phoebus_tools_repo.changed | bool or phoebus_tools_build_always

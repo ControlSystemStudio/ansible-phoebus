@@ -96,7 +96,7 @@
 # Run the Install script
 - name: Install AA
   become: true
-  command:
+  ansible.builtin.command:
     chdir: "{{ aa_install_location }}/install_scripts"
     cmd: "{{ aa_install_location }}/install_scripts/single_machine_install.sh"
   environment:
@@ -117,6 +117,7 @@
     SSL_PORT_ETL: "{{ etl_port }}"
     SSL_PORT_RETRIEVAL: "{{ data_retrieval_port }}"
     TRUSTED_PROXIES: "{{ aa_trusted_proxies | map('regex_replace', '\\.', '\\\\.') | join('|') }}"
+  changed_when: true
 
 - name: setup conf files for installation
   become: true
@@ -129,12 +130,13 @@
 # Configure site specific content
 - name: Configure static AA content
   become: true
-  command:
+  ansible.builtin.command:
     chdir: "{{ aa_install_location }}/install_scripts"
     cmd: "java -cp ${DEPLOY_DIR}/mgmt/webapps/mgmt/WEB-INF/classes:${DEPLOY_DIR}/mgmt/webapps/mgmt/WEB-INF/lib/log4j-1.2-api-*.jar org.epics.archiverappliance.mgmt.bpl.SyncStaticContentHeadersFooters /tmp/facility_template_changes.html ${DEPLOY_DIR}/mgmt/webapps/mgmt/ui"
   environment:
     DEPLOY_DIR: "{{ aa_deploy_location }}"
     PATH: "{{ aa_java_home }}/bin:${PATH}"
+  changed_when: true
 
 # A temporary fix for the mysql connection host
 - name: Replace mysql host string
