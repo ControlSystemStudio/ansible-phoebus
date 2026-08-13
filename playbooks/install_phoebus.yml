@@ -1,0 +1,16 @@
+---
+# Build and install Phoebus core libraries.
+#
+# Usage:
+#   ansible-playbook playbooks/install_phoebus.yml -i inventory
+#
+# Key variables (set in inventory or on the command line):
+#   phoebus_tools_version       Git branch/tag to build (default: master)
+#   phoebus_tools_build_always  Set to true to rebuild even when repo is unchanged (default: true)
+
+- name: Install Phoebus
+  hosts: all
+  become: true
+  roles:
+    - role: phoebus_dependencies
+    - role: phoebus_tools

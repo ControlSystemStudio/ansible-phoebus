@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# Phoebus launcher for Linux
+# Installed by Ansible - do not edit manually
+
+TOP="{{ phoebus_tools_phoebus_dest }}"
+JAR=$(echo "${TOP}"/phoebus-product/target/product-*.jar)
+
+export JAVA_HOME="{{ phoebus_tools_java_home }}"
+export PATH="${JAVA_HOME}/bin:${PATH}"
+
+# Reduce virtual memory fragmentation
+export MALLOC_ARENA_MAX=4
+
+SETTINGS="{{ phoebus_tools_preferences_file }}"
+
+# Allow overriding jar or settings via environment
+JAR="${PHOEBUS_JAR:-$JAR}"
+SETTINGS="${PHOEBUS_SETTINGS:-$SETTINGS}"
+
+# Single-instance server port so multiple launches reuse one window.
+# Override via PHOEBUS_SERVER env var if needed.
+OPT="-server ${PHOEBUS_SERVER:-{{ phoebus_tools_port }}}"
+
+case "${1:-}" in
+  -help|-main)
+    # Run converters / non-UI commands in the foreground
+    java -Dfile.encoding=UTF-8 -jar "${JAR}" ${OPT} "$@"
+    ;;
+  *)
+    java -Dfile.encoding=UTF-8 -jar "${JAR}" ${OPT} \
+      -settings "${SETTINGS}" \
+      "$@" &
+    ;;
+esac

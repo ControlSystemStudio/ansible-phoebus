@@ -29,7 +29,7 @@
 - name: Override Maven settings.xml
   become: true
   ansible.builtin.template:
-    src: settings.xml.j2
+    src: maven-settings.xml.j2
     dest: "{{ phoebus_tools_settings }}"
     owner: "{{ phoebus_tools_owner }}"
     group: "{{ phoebus_tools_owner }}"
@@ -61,3 +61,23 @@
     PATH: "{{ phoebus_tools_java_home }}/bin:{{ phoebus_tools_mvn_home }}/bin:{{ ansible_env.PATH }}"
   changed_when: true
   when: phoebus_tools_repo.changed | bool or phoebus_tools_build_always
+
+- name: Deploy Phoebus preferences file
+  become: true
+  ansible.builtin.template:
+    src: preferences.ini.j2
+    dest: "{{ phoebus_tools_preferences_file }}"
+    owner: "{{ phoebus_tools_owner }}"
+    group: "{{ phoebus_tools_owner }}"
+    mode: "u=rw,g=r,o=r"
+  when: phoebus_tools_install_preferences
+
+- name: Install Phoebus launcher script
+  become: true
+  ansible.builtin.template:
+    src: phoebus.sh.j2
+    dest: "{{ phoebus_tools_launcher_bin_dir }}/{{ phoebus_tools_launcher_name }}"
+    owner: root
+    group: root
+    mode: "0755"
+  when: phoebus_tools_install_launcher

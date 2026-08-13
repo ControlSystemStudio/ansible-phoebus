@@ -6,8 +6,26 @@ phoebus_tools_mvn_home: "/opt/epics-tools/lib/apache-maven-3.9.9"
 
 phoebus_tools_root: "/opt/epics-tools/tools/phoebus"
 phoebus_tools_phoebus_dest: "{{ phoebus_tools_root }}/lib/phoebus"
-phoebus_tools_settings: "{{ phoebus_tools_root }}/settings.xml"
+phoebus_tools_settings: "{{ phoebus_tools_root }}/maven-settings.xml"
 
 phoebus_tools_owner: "csstudio"
+
+# Maven build options
 phoebus_tools_override_mvn_settings: false
+phoebus_tools_mvn_settings: "{{ phoebus_tools_root }}/maven-settings.xml"
 phoebus_tools_build_always: true
+
+# Launcher script
+# Set to true to install a phoebus launch script into phoebus_tools_launcher_bin_dir
+phoebus_tools_install_launcher: false
+phoebus_tools_launcher_bin_dir: "/usr/local/bin"
+phoebus_tools_launcher_name: "phoebus"
+# Port used by Phoebus single-instance mode (-server). A second launch forwards
+# its arguments to the running instance rather than opening a new window.
+phoebus_tools_port: 4918
+
+# Phoebus runtime preferences file
+# Path deployed on the target host. Referenced by the launcher via -settings.
+phoebus_tools_preferences_file: "{{ phoebus_tools_root }}/preferences.ini"
+# Set to true to deploy a preferences.ini from the template
+phoebus_tools_install_preferences: false
