@@ -29,14 +29,59 @@ Behavior
 - Requires `phoebus_services_kafka_cluster_id` from inventory.
 - `phoebus_services_kafka_controller_quorum_voters` defaults to `1@localhost:9093` for single-node use.
 
-Cluster vars
-------------
+Generate a cluster ID (run once, share the result across all nodes):
 
-- `phoebus_services_kafka_cluster_id`: pre-generated KRaft cluster id shared by all nodes.
-- `phoebus_services_kafka_controller_quorum_voters`: controller voters list, for example `1@10.0.1.11:9093,2@10.0.1.12:9093,3@10.0.1.13:9093`.
-- `phoebus_services_kafka_node_id`: unique per node.
+```bash
+kafka-storage.sh random-uuid
+```
 
-Note: the voters list must include an entry for `phoebus_services_kafka_node_id`.
+Single-node example
+-------------------
+
+inventory `host_vars/kafka1.yml`:
+
+```yaml
+phoebus_services_kafka_cluster_id: "your-generated-uuid"
+phoebus_services_kafka_node_id: 1
+phoebus_services_kafka_controller_quorum_voters:
+  - "1@kafka1.example.org:9093"
+```
+
+3-node cluster example
+----------------------
+
+All three nodes share the same `cluster_id` and the same `controller_quorum_voters` list.
+Each node gets a unique `node_id`.
+
+inventory `group_vars/kafka.yml` (shared by all nodes):
+
+```yaml
+phoebus_services_kafka_cluster_id: "your-generated-uuid"
+phoebus_services_kafka_controller_quorum_voters:
+  - "1@kafka1.example.org:9093"
+  - "2@kafka2.example.org:9093"
+  - "3@kafka3.example.org:9093"
+```
+
+inventory `host_vars/kafka1.yml`:
+
+```yaml
+phoebus_services_kafka_node_id: 1
+```
+
+inventory `host_vars/kafka2.yml`:
+
+```yaml
+phoebus_services_kafka_node_id: 2
+```
+
+inventory `host_vars/kafka3.yml`:
+
+```yaml
+phoebus_services_kafka_node_id: 3
+```
+
+See `playbooks/kafka_cluster.yml` for the matching playbook.
 
 Dependencies
 ------------
