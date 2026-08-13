@@ -7,7 +7,7 @@ epics_services_account: csstudio
 # JDK and Tomcat configuration (using system RPM installation)
 default_jdk_version: "17"
 aa_tomcat_home: "/usr/share/tomcat"
-aa_tomcat_native_lib: "/usr/lib64"  # Location of libtcnative-1.so from tomcat-native RPM
+aa_tomcat_native_lib: "/usr/lib64"  # libtcnative-1.so from tomcat-native RPM
 
 aa_dependencies_loc: /tmp/aa_dependencies
 aa_build_loc: /tmp/aa_build

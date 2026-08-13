@@ -103,8 +103,14 @@
     DEPLOY_DIR: "{{ aa_deploy_location }}"
     JAVA_HOME: "{{ aa_java_home }}"
     TOMCAT_HOME: "{{ aa_tomcat_home }}"
-    MYSQL_CLIENT_JAR: "{{ aa_install_location }}/mysql-connector-java-5.1.34/mysql-connector-java-5.1.34-bin.jar"
-    MYSQL_CONNECTION_STRING: "--host={{ aa_mysql_server }} --user={{ aa_mysql_user }} --password={{ aa_mysql_password }} --database={{ aa_mysql_database }}"
+    MYSQL_CLIENT_JAR: >-
+      {{ aa_install_location }}/mysql-connector-java-5.1.34/
+      mysql-connector-java-5.1.34-bin.jar
+    MYSQL_CONNECTION_STRING: >-
+      --host={{ aa_mysql_server }}
+      --user={{ aa_mysql_user }}
+      --password={{ aa_mysql_password }}
+      --database={{ aa_mysql_database }}
     SITE_SPECIFIC_POLICIES_FILE: "{{ aa_policies_file }}"
     ARCHAPPL_APPLIANCES: "{{ aa_appliances_file }}"
     ARCHAPPL_MYIDENTITY: "{{ aa_identity }}"
@@ -132,7 +138,13 @@
   become: true
   ansible.builtin.command:
     chdir: "{{ aa_install_location }}/install_scripts"
-    cmd: "java -cp ${DEPLOY_DIR}/mgmt/webapps/mgmt/WEB-INF/classes:${DEPLOY_DIR}/mgmt/webapps/mgmt/WEB-INF/lib/log4j-1.2-api-*.jar org.epics.archiverappliance.mgmt.bpl.SyncStaticContentHeadersFooters /tmp/facility_template_changes.html ${DEPLOY_DIR}/mgmt/webapps/mgmt/ui"
+    cmd: >-
+      java
+      -cp ${DEPLOY_DIR}/mgmt/webapps/mgmt/WEB-INF/classes:
+      ${DEPLOY_DIR}/mgmt/webapps/mgmt/WEB-INF/lib/log4j-1.2-api-*.jar
+      org.epics.archiverappliance.mgmt.bpl.SyncStaticContentHeadersFooters
+      /tmp/facility_template_changes.html
+      ${DEPLOY_DIR}/mgmt/webapps/mgmt/ui
   environment:
     DEPLOY_DIR: "{{ aa_deploy_location }}"
     PATH: "{{ aa_java_home }}/bin:${PATH}"
