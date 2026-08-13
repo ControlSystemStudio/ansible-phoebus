@@ -195,5 +195,5 @@
   ansible.builtin.systemd:
     state: restarted
     enabled: true
-    daemon_reload: yes
+    daemon_reload: true
     name: "{{ aa_service_name }}.service"

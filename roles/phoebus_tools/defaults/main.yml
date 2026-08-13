@@ -20,8 +20,8 @@ phoebus_tools_build_always: true
 phoebus_tools_install_launcher: false
 phoebus_tools_launcher_bin_dir: "/usr/local/bin"
 phoebus_tools_launcher_name: "phoebus"
-# Port used by Phoebus single-instance mode (-server). A second launch forwards
-# its arguments to the running instance rather than opening a new window.
+# Port used by Phoebus single-instance mode (-server).
+# A second launch forwards its arguments to the running instance.
 phoebus_tools_port: 4918
 
 # Phoebus runtime preferences file
