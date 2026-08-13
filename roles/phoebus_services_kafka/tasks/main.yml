@@ -80,3 +80,4 @@
     name: "{{ phoebus_services_kafka_service_name }}"
     state: started
     enabled: true
+    daemon_reload: true

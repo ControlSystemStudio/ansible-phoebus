@@ -26,7 +26,8 @@ Behavior
 
 - Uses KRaft mode (no Zookeeper dependency).
 - Automatically formats Kafka storage with `kafka-storage.sh` when first installed.
-- Requires `phoebus_services_kafka_cluster_id` and `phoebus_services_kafka_controller_quorum_voters` from inventory.
+- Requires `phoebus_services_kafka_cluster_id` from inventory.
+- `phoebus_services_kafka_controller_quorum_voters` defaults to `1@localhost:9093` for single-node use.
 
 Cluster vars
 ------------
@@ -34,6 +35,8 @@ Cluster vars
 - `phoebus_services_kafka_cluster_id`: pre-generated KRaft cluster id shared by all nodes.
 - `phoebus_services_kafka_controller_quorum_voters`: controller voters list, for example `1@10.0.1.11:9093,2@10.0.1.12:9093,3@10.0.1.13:9093`.
 - `phoebus_services_kafka_node_id`: unique per node.
+
+Note: the voters list must include an entry for `phoebus_services_kafka_node_id`.
 
 Dependencies
 ------------
