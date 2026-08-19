@@ -41,7 +41,7 @@
   become_user: "{{ phoebus_tools_owner }}"
   ansible.builtin.command: >-
     mvn clean verify
-    --settings={{ phoebus_tools_settings }}
+    {{ phoebus_tools_mvn_settings_arg }}
     -P sphinx -N
   args:
     chdir: "{{ phoebus_tools_phoebus_dest }}"
@@ -60,7 +60,7 @@
   become_user: "{{ phoebus_tools_owner }}"
   ansible.builtin.command: >-
     mvn clean install
-    --settings={{ phoebus_tools_settings }}
+    {{ phoebus_tools_mvn_settings_arg }}
     -DskipTests=true -Dmaven.javadoc.skip=true
   args:
     chdir: "{{ phoebus_tools_phoebus_dest }}"

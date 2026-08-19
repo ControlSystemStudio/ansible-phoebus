@@ -13,6 +13,7 @@ phoebus_tools_owner: "csstudio"
 # Maven build options
 phoebus_tools_override_mvn_settings: false
 phoebus_tools_mvn_settings: "{{ phoebus_tools_root }}/maven-settings.xml"
+phoebus_tools_mvn_settings_arg: "{{ '--settings=' ~ phoebus_tools_mvn_settings if phoebus_tools_override_mvn_settings else '' }}"
 phoebus_tools_build_always: true
 
 # Launcher script
