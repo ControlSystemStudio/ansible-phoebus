@@ -59,7 +59,7 @@
     dest: "{{ aa_install_location }}/install_scripts/"
     owner: "{{ epics_services_account }}"
     group: "{{ epics_services_account }}"
-    
+
 - name: setup mysql config script
   become: true
   template:
@@ -67,15 +67,15 @@
     dest: "{{ aa_install_location }}/install_scripts/"
     owner: "{{ epics_services_account }}"
     group: "{{ epics_services_account }}"
-    
-- name: setup tomcat installation script 
+
+- name: setup tomcat installation script
   template:
     src: deployMultipleTomcats.py
     dest: "{{ aa_install_location }}/install_scripts/"
     owner: "{{ epics_services_account }}"
     group: "{{ epics_services_account }}"
 
-- name: setup conf files for installation 
+- name: setup conf files for installation
   become: true
   template:
     src: policies.py
@@ -166,10 +166,10 @@
     owner: "{{ epics_services_account }}"
     group: "{{ epics_services_account }}"
   loop:
-    - { name: 'mgmt', java_opts: '{{ aa_java_opts_mgmt }}' }
-    - { name: 'engine', java_opts: '{{ aa_java_opts_engine }}' }
-    - { name: 'etl', java_opts: '{{ aa_java_opts_etl }}' }
-    - { name: 'retrieval', java_opts: '{{ aa_java_opts_retrieval }}' }
+    - {name: 'mgmt', java_opts: '{{ aa_java_opts_mgmt }}'}
+    - {name: 'engine', java_opts: '{{ aa_java_opts_engine }}'}
+    - {name: 'etl', java_opts: '{{ aa_java_opts_etl }}'}
+    - {name: 'retrieval', java_opts: '{{ aa_java_opts_retrieval }}'}
   vars:
     aa_instance_name: "{{ item.name }}"
     aa_java_opts: "{{ item.java_opts }}"
