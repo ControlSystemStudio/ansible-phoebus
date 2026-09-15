@@ -9,7 +9,7 @@ StartLimitBurst=5
 
 [Service]
 Environment=ES_HOME={{ phoebus_services_elasticsearch_release_dir }}
-Environment=ES_JAVA_OPTS={{ phoebus_services_elasticsearch_java_opts }}
+Environment="ES_JAVA_OPTS={{ phoebus_services_elasticsearch_java_opts }}"
 Environment=CONF_DIR={{ phoebus_services_elasticsearch_conf_dir }}
 Environment=CONF_FILE={{ phoebus_services_elasticsearch_conf_dir }}/elasticsearch.yml
 Environment=DATA_DIR={{ phoebus_services_elasticsearch_data_dir }}
