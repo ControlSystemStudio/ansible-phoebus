@@ -1,0 +1,84 @@
+---
+- name: Ensure Recceiver service directory exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ phoebus_services_recceiver_root }}"
+    state: directory
+    mode: "u=rwx,g=rx,o=rx"
+    owner: "{{ phoebus_services_recceiver_account }}"
+    group: "{{ phoebus_services_recceiver_account }}"
+
+- name: Clone ChannelFinder Recceiver source
+  become: true
+  become_user: "{{ phoebus_services_recceiver_account }}"
+  ansible.builtin.git:
+    repo: "{{ phoebus_services_recceiver_repo_url }}"
+    dest: "{{ phoebus_services_recceiver_repo_dest }}"
+    force: true
+    update: true
+
+- name: Package Recceiver with Maven
+  become: true
+  become_user: "{{ phoebus_services_recceiver_account }}"
+  ansible.builtin.command: mvn -DskipTests package
+  args:
+    chdir: "{{ phoebus_services_recceiver_repo_dest }}"
+  environment:
+    JAVA_HOME: "{{ phoebus_services_recceiver_java_home }}"
+    PATH: "{{ phoebus_services_recceiver_java_home }}/bin:{{ phoebus_services_recceiver_mvn_home }}/bin:{{ ansible_env.PATH }}"
+  changed_when: true
+
+- name: Find built Recceiver jar
+  become: true
+  ansible.builtin.find:
+    paths: "{{ phoebus_services_recceiver_repo_dest }}/target"
+    patterns: "recceiver-*.jar"
+    recurse: false
+  register: phoebus_services_recceiver_jar_file
+
+- name: Fail if no Recceiver jar was built
+  ansible.builtin.fail:
+    msg: "No Recceiver jar found in {{ phoebus_services_recceiver_repo_dest }}/target after Maven build."
+  when: phoebus_services_recceiver_jar_file.matched == 0
+
+- name: Copy Recceiver jar to service directory
+  become: true
+  ansible.builtin.copy:
+    src: "{{ phoebus_services_recceiver_jar_file.files[0].path }}"
+    dest: "{{ phoebus_services_recceiver_jar }}"
+    owner: "{{ phoebus_services_recceiver_account }}"
+    group: "{{ phoebus_services_recceiver_account }}"
+    mode: "u=rwx,g=rx,o=rx"
+    remote_src: true
+
+- name: Create application.properties for Recceiver
+  become: true
+  ansible.builtin.template:
+    src: application.properties.j2
+    dest: "{{ phoebus_services_recceiver_root }}/application.properties"
+    owner: "{{ phoebus_services_recceiver_account }}"
+    group: "{{ phoebus_services_recceiver_account }}"
+    mode: "u=rw,g=r,o=r"
+
+- name: Install procServ package
+  become: true
+  ansible.builtin.package:
+    name: procServ
+    state: present
+
+- name: Create systemd service file for Recceiver
+  become: true
+  ansible.builtin.template:
+    src: recceiver.service.j2
+    dest: "/etc/systemd/system/{{ phoebus_services_recceiver_service_name }}.service"
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+
+- name: Restart Recceiver service
+  become: true
+  ansible.builtin.systemd:
+    name: "{{ phoebus_services_recceiver_service_name }}"
+    state: restarted
+    daemon_reload: true
+    enabled: true

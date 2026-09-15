@@ -1,0 +1,42 @@
+# File /etc/systemd/system/phoebus_services_recceiver.service
+#
+# After changes:
+#   sudo systemctl daemon-reload
+#
+# Start/status/stop:
+#   sudo systemctl start phoebus_services_recceiver.service
+#   sudo systemctl status phoebus_services_recceiver.service
+#   sudo systemctl stop phoebus_services_recceiver.service
+#
+# Start when computer boots:
+#   sudo systemctl enable phoebus_services_recceiver.service
+#
+
+[Unit]
+Description=ChannelFinder Recceiver service
+Documentation=https://github.com/ChannelFinder/recceiver
+Wants=network-online.target
+After=phoebus_services_cf.service
+Requires=phoebus_services_cf.service
+
+StartLimitIntervalSec=500
+StartLimitBurst=5
+
+[Service]
+User={{ phoebus_services_recceiver_account }}
+Group={{ phoebus_services_recceiver_account }}
+
+WorkingDirectory={{ phoebus_services_recceiver_root }}
+Restart=on-failure
+RestartSec=5s
+
+Environment=JAVA_HOME={{ phoebus_services_recceiver_java_home }}
+Environment=PATH={{ phoebus_services_recceiver_java_home }}/bin:/usr/bin:/usr/local/bin
+Environment=SPRING_CONFIG_LOCATION=file:{{ phoebus_services_recceiver_root }}/application.properties
+
+ExecStart=/usr/bin/procServ --foreground --noautorestart --name recceiver --chdir {{ phoebus_services_recceiver_root }} --pidfile {{ phoebus_services_recceiver_root }}/recceiver.pid --logfile {{ phoebus_services_recceiver_root }}/console.log {{ phoebus_services_recceiver_procserv_port }} java -jar {{ phoebus_services_recceiver_jar }}
+
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

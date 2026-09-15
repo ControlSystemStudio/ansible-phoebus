@@ -1,0 +1,22 @@
+---
+phoebus_services_recceiver_root: /opt/epics-tools/services/recceiver
+phoebus_services_recceiver_account: csstudio
+
+phoebus_services_recceiver_repo_url: https://github.com/ChannelFinder/recceiver.git
+phoebus_services_recceiver_repo_dest: "{{ phoebus_services_recceiver_root }}/source"
+phoebus_services_recceiver_service_name: phoebus_services_recceiver
+phoebus_services_recceiver_jar_name: recceiver.jar
+phoebus_services_recceiver_jar: "{{ phoebus_services_recceiver_root }}/{{ phoebus_services_recceiver_jar_name }}"
+
+phoebus_services_recceiver_java_home: /opt/epics-tools/lib/jvm/jdk-21
+phoebus_services_recceiver_mvn_home: /opt/epics-tools/lib/apache-maven-3.9.9
+
+phoebus_services_recceiver_bind_address: 0.0.0.0
+phoebus_services_recceiver_tcp_port: 5064
+phoebus_services_recceiver_procserv_port: 5065
+phoebus_services_recceiver_udp_broadcast_address: 255.255.255.255
+phoebus_services_recceiver_udp_broadcast_port: 5049
+phoebus_services_recceiver_announce_interval: 15.0
+phoebus_services_recceiver_tcp_timeout: 15.0
+phoebus_services_recceiver_read_buffer_size: 4096
+phoebus_services_recceiver_cf_service_url: http://localhost:9090/ChannelFinder
