@@ -37,7 +37,7 @@
     state: directory
     owner: "{{ epics_services_account }}"
     group: "{{ epics_services_account }}"
-    
+
 - name: Download mysql-connector
   get_url:
     url: https://cdn.mysql.com/archives/mysql-connector-java-5.1/mysql-connector-java-5.1.34.tar.gz
