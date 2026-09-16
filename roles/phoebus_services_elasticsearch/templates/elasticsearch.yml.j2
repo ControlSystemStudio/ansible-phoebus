@@ -85,6 +85,7 @@ discovery.seed_hosts: {{ phoebus_services_elasticsearch_seed_hosts | to_json }}
 #
 #discovery.zen.minimum_master_nodes:
 {% if (phoebus_services_elasticsearch_discovery_type | string) != 'single-node' and (phoebus_services_elasticsearch_initial_master_nodes | length > 0) %}
+# Bootstrap-only setting for first cluster formation. Remove or empty it after the cluster forms.
 cluster.initial_master_nodes: {{ phoebus_services_elasticsearch_initial_master_nodes | to_json }}
 {% endif %}
 #
@@ -113,6 +114,8 @@ cluster.initial_master_nodes: {{ phoebus_services_elasticsearch_initial_master_n
 
 # Enable security features
 xpack.security.enabled: {{ phoebus_services_elasticsearch_xpack_security_enabled | bool | lower }}
+xpack.security.http.ssl.enabled: {{ phoebus_services_elasticsearch_xpack_http_ssl_enabled | bool | lower }}
+xpack.security.transport.ssl.enabled: {{ phoebus_services_elasticsearch_xpack_transport_ssl_enabled | bool | lower }}
 
 # Allow HTTP API connections from anywhere
 # Connections are encrypted and require user authentication

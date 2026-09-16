@@ -6,7 +6,7 @@ phoebus_services_elasticsearch_version: 8.2.3
 phoebus_services_elasticsearch_url: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-{{ phoebus_services_elasticsearch_version }}-linux-x86_64.tar.gz
 
 phoebus_services_elasticsearch_release_dir: "{{ phoebus_services_elasticsearch_root }}/release"
-phoebus_services_elasticsearch_conf_dir: "{{ phoebus_services_elasticsearch_root }}/conf"
+phoebus_services_elasticsearch_conf_dir: "{{ phoebus_services_elasticsearch_release_dir }}/config"
 phoebus_services_elasticsearch_data_dir: "{{ phoebus_services_elasticsearch_root }}/data"
 phoebus_services_elasticsearch_logs_dir: "{{ phoebus_services_elasticsearch_root }}/logs"
 phoebus_services_elasticsearch_run_dir: "{{ phoebus_services_elasticsearch_root }}/run"
@@ -24,6 +24,8 @@ phoebus_services_elasticsearch_discovery_type: single-node
 phoebus_services_elasticsearch_seed_hosts: []
 phoebus_services_elasticsearch_initial_master_nodes: []
 phoebus_services_elasticsearch_xpack_security_enabled: false
+phoebus_services_elasticsearch_xpack_http_ssl_enabled: false
+phoebus_services_elasticsearch_xpack_transport_ssl_enabled: false
 phoebus_services_elasticsearch_java_home: /opt/epics-tools/lib/jvm/jdk-21
 phoebus_services_elasticsearch_java_opts: -Xms4g -Xmx4g
 phoebus_services_elasticsearch_service_name: phoebus_services_elasticsearch
