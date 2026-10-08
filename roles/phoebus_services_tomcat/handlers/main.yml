@@ -1,5 +1,5 @@
 ---
-- name: restart tomcat
+- name: Restart Tomcat
   become: true
   ansible.builtin.service:
     name: "{{ phoebus_services_tomcat_service_name }}"

@@ -17,7 +17,7 @@ phoebus_services_kafka_controller_port: 9093
 phoebus_services_kafka_node_id: 1
 # Example: ["1@10.0.1.11:9093", "2@10.0.1.12:9093", "3@10.0.1.13:9093"]
 phoebus_services_kafka_controller_quorum_voters:
-	- "1@localhost:9093"
+  - "1@localhost:9093"
 phoebus_services_kafka_cluster_id: ""
 phoebus_services_kafka_logs_path: "{{ phoebus_services_kafka_logs_dir }}/kafka-logs"
 
