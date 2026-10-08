@@ -31,7 +31,7 @@
       - tomcat-native
     state: present
 
-- name: ensure aa_depndecies directory exists
+- name: Ensure AA dependencies directory exists
   file:
     path: "{{ aa_dependencies_loc }}"
     state: directory

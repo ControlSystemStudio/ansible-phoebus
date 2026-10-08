@@ -2,16 +2,21 @@
 # tasks file for phoebus_services_aa
 
 # download build and install dependencies
-- ansible.builtin.include_tasks: dependencies.yml
-- ansible.builtin.include_tasks: configure_mysql.yml
+- name: Install dependencies
+  ansible.builtin.include_tasks: dependencies.yml
+- name: Configure MySQL
+  ansible.builtin.include_tasks: configure_mysql.yml
 
 # configure SSL certificates if enabled
-- ansible.builtin.include_tasks: configure_ssl.yml
+- name: Configure SSL certificates
+  ansible.builtin.include_tasks: configure_ssl.yml
   when: aa_enable_ssl | bool
 
 # build aa
 # TODO: replace with the use of prebuilt binaries
-- ansible.builtin.include_tasks: build_aa.yml
+- name: Build Archiver Appliance
+  ansible.builtin.include_tasks: build_aa.yml
 
 # install and deploy aa
-- ansible.builtin.include_tasks: install_aa.yml
+- name: Install Archiver Appliance
+  ansible.builtin.include_tasks: install_aa.yml
