@@ -1,7 +1,7 @@
 ---
 phoebus_tools_version: "master"
 
-phoebus_tools_java_home: "/opt/epics-tools/lib/jvm/jdk-21"
+phoebus_tools_java_home: "/opt/epics-tools/lib/jvm/jdk-25"
 phoebus_tools_mvn_home: "/opt/epics-tools/lib/apache-maven-3.9.9"
 
 phoebus_tools_root: "/opt/epics-tools/tools/phoebus"
