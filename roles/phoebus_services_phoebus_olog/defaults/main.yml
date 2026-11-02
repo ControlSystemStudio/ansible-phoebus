@@ -3,11 +3,11 @@ phoebus_services_phoebus_olog_root: /opt/epics-tools/services/olog
 phoebus_services_phoebus_olog_account: csstudio
 
 phoebus_services_phoebus_olog_service_name: phoebus_services_phoebus_olog
-phoebus_services_phoebus_olog_version: v5.0.4
-phoebus_services_phoebus_olog_jar_name: service-olog-5.0.4.jar
+phoebus_services_phoebus_olog_version: v6.0.3
+phoebus_services_phoebus_olog_jar_name: service-olog-6.0.3.jar
 phoebus_services_phoebus_olog_jar: "{{ phoebus_services_phoebus_olog_root }}/{{ phoebus_services_phoebus_olog_jar_name }}"
 
-phoebus_services_phoebus_olog_java_home: /opt/epics-tools/lib/jvm/jdk-21
+phoebus_services_phoebus_olog_java_home: /opt/epics-tools/lib/jvm/jdk-25
 phoebus_services_phoebus_olog_mvn_home: /opt/epics-tools/lib/apache-maven-3.9.9
 
 phoebus_services_phoebus_olog_repo_url: https://github.com/Olog/phoebus-olog.git
