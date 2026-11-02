@@ -5,6 +5,7 @@ phoebus_services_phoebus_olog_webclient_project_path: "{{ phoebus_services_phoeb
 phoebus_services_phoebus_olog_webclient_version: v2.2.1
 phoebus_services_phoebus_olog_webclient_account: csstudio
 phoebus_services_phoebus_olog_webclient_service_name: phoebus_services_phoebus_olog_webclient
+phoebus_services_phoebus_olog_webclient_http_port: 3000
 
 # procServ port
 phoebus_services_phoebus_olog_webclient_procserv_port: 4147

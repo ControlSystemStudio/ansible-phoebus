@@ -8,10 +8,10 @@
     name: procServ
     state: present
 
-- name: Copy run-phoebus-olog-webclient.sh file
+- name: Template run-phoebus-olog-webclient.sh file
   become: true
-  ansible.builtin.copy:
-    src: run-phoebus-olog-webclient.sh
+  ansible.builtin.template:
+    src: run-phoebus-olog-webclient.sh.j2
     dest: "{{ phoebus_services_phoebus_olog_webclient_project_path }}/run-phoebus-olog-webclient.sh"
     mode: "u=rwx,g=rx,o=rx"
     owner: "{{ phoebus_services_phoebus_olog_webclient_account }}"
