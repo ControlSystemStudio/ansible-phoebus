@@ -16,8 +16,13 @@ logging.level.org.apache.catalina=INFO
 logging.level.org.apache.kafka=INFO
 logging.level.org.springframework.web=INFO
 logging.level.org.springframework.security=INFO
+logging.level.org.springframework.messaging=INFO
+logging.level.org.springframework.web.socket=INFO
 
 spring.main.allow-bean-definition-overriding=true
+
+# send the error messages along with the error code, the options are never, always, on_param
+server.error.include-message=always
 
 ############## SSL - Configuration ##############
 server.ssl.key-store-type=PKCS12
@@ -26,6 +31,20 @@ server.ssl.key-store-password=password
 server.ssl.key-alias=cf
 
 security.require-ssl=true
+
+########### Wanted authentication providers #############
+# This is a comma separated list of wanted authentication providers
+# Supported values:
+# inMemory - in memory, hard coded username/password
+# ldap - e.g. external OpenLDAP
+# embeddedLdap - embedded LDAP
+# activeDirectory - Active Directory
+authenticationProviders=activeDirectory
+
+# Resources for the authentication providers that need it
+# embeddedLdapPropertySource=classpath:/security/embedded_ldap.properties
+# ldapPropertySource=classpath:/security/ldap.properties
+# activeDirectoryPropertySource=classpath:/security/active_directory.properties
 
 ############## AD - External ##############
 ad.enabled = true
@@ -52,13 +71,16 @@ ldap.manager.dn=
 ldap.manager.password=
 
 ############## LDAP - Embedded ##############
+# Keep the app-level flag aligned with the app logic.
 embedded_ldap.enabled = false
+management.health.ldap.enabled=false
 embedded_ldap.urls = ldap://localhost:9389/dc=olog,dc=local
 embedded_ldap.base.dn = dc=olog,dc=local
 embedded_ldap.user.dn.pattern = uid={0},ou=People
 embedded_ldap.groups.search.base = ou=Group
 embedded_ldap.groups.search.pattern = (memberUid= {1})
-spring.ldap.embedded.ldif=classpath:olog.ldif
+# Disable the embedded LDIF import unless this is intentionally enabled.
+spring.ldap.embedded.ldif=
 spring.ldap.embedded.base-dn=dc=olog,dc=local
 spring.ldap.embedded.port=9389
 spring.ldap.embedded.validation.enabled=false
@@ -89,6 +111,12 @@ elasticsearch.network.host: {{ phoebus_services_phoebus_olog_es_host }}
 #
 elasticsearch.http.port: {{ phoebus_services_phoebus_olog_es_port }}
 
+# Set the name of the elastic cluster
+# # elasticsearch.cluster.name: elasticsearch
+
+# Create the Olog indices if they do not exist
+elasticsearch.create.indices: true
+
 # The names of the index to use for olog
 elasticsearch.tag.index: olog_tags
 
@@ -100,15 +128,23 @@ elasticsearch.log.index: olog_logs
 
 elasticsearch.sequence.index: olog_sequence
 
+elasticsearch.template.index: olog_templates
+
+elasticsearch.level.index: olog_levels
+
+# Archive modified log entries
+elasticsearch.log.archive.index: olog_archived_logs
+
 ############################## Mongo gridfs client ###############################
 
 mongo.database:ologAttachments
 mongo.host:{{ phoebus_services_phoebus_olog_mongod_host }}
 mongo.port:{{ phoebus_services_phoebus_olog_mongod_port }}
 
-################## File upload and request size limits ##################
-spring.servlet.multipart.max-file-size=50MB
-spring.servlet.multipart.max-request-size=100MB
+################## File upload and request size limits ####################
+# Unit should be MB (or KB), it is case-sensitive! Invalid unit will inhibit server startup.
+spring.servlet.multipart.max-file-size=15MB
+spring.servlet.multipart.max-request-size=50MB
 
 ################## List of "levels" ##################
 levels=Urgent,Suggestion,Info,Request,Problem
@@ -117,9 +153,10 @@ levels=Urgent,Suggestion,Info,Request,Problem
 # NOTE: Non-numeric values will trigger exception and fail startup of service.
 # By default Elasticsearch will return 10 items matching a query.
 # This may bee too limiting, e.g. when client requests all tags.
-elasticsearch.result.size.logbooks=10
-elasticsearch.result.size.tags=10
-elasticsearch.result.size.properties=10
+elasticsearch.result.size.logbooks=100
+elasticsearch.result.size.tags=100
+elasticsearch.result.size.properties=100
+elasticsearch.result.size.levels=100
 # Default log entry search size if client does not set "limit" request parameter
 elasticsearch.result.size.search.default=100
 # Max log entry search size
@@ -146,3 +183,22 @@ spring.mvc.static-path-pattern=/Olog/**
 default.logbook.url=
 default.tags.url=
 default.properties.url=
+default.levels.url=
+
+########### OpenAPI / Swagger #############
+#OPENAPI
+springdoc.api-docs.path=${API_PATH:/v3/api-docs}
+springdoc.swagger-ui.path=${SWAGGER_PATH:/swagger-ui}
+springdoc.swagger-ui.disable-swagger-default-url=true
+springdoc.swagger-ui.displayOperationId=true
+springdoc.api-docs.version=OPENAPI_3_1
+
+########### Spring Boot Actuator Configuration #############
+# Enable actuator endpoints
+management.endpoints.web.exposure.include=health,info,metrics,loggers,env
+
+# Base path for actuator endpoints (default is /actuator)
+# management.endpoints.web.base-path=/actuator
+
+# Enable info endpoint
+management.info.env.enabled=true
