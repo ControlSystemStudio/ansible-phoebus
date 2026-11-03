@@ -14,7 +14,7 @@ Paths
 Defaults
 --------
 
-- Version: `v2.2.1`
+- Version: `v2.8.0`
 - Olog backend URL: `http://localhost:4181/Olog`
 - HTTP port: `3000` (override with `phoebus_services_phoebus_olog_webclient_http_port`)
 - procServ port: `4147`
