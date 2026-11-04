@@ -1,15 +1,15 @@
 #!/bin/bash
+set -e
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+cd "{{ phoebus_services_phoebus_olog_webclient_project_path }}"
 export PORT={{ phoebus_services_phoebus_olog_webclient_http_port }}
 
-id
-echo ${HOME}
+if [ ! -f .env.production.local ]; then
+    echo "Missing .env.production.local; deploy the Olog webclient configuration before starting." >&2
+    exit 1
+fi
 
-npm -v
 npm install
 npm run build
-npm install -g serve
-serve -s build
+npm install --global --prefix "$HOME/.local" serve
+exec "$HOME/.local/bin/serve" -s build -l "$PORT"
