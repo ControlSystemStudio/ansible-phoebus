@@ -20,12 +20,7 @@ Defaults
 --------
 
 - Version: `v2.8.0`
-- Olog backend URL: `http://localhost:4181/Olog`
+- Olog backend URL: `https://localhost:4181/Olog` (override when the backend is on another host)
+- WebSocket and Swagger URLs derive from the backend URL
 - HTTP port: `3000` (override with `phoebus_services_phoebus_olog_webclient_http_port`)
 - procServ port: `4147`
-
-Dependencies
-------------
-
-- `phoebus_dependencies`
-- `phoebus_services_phoebus_olog`
